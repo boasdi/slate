@@ -91,7 +91,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;json&quot;,&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -100,6 +100,7 @@
     </a>
     <div class="tocify-wrapper">
         <div class="lang-selector">
+              <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
               <a href="#" data-language-name="shell">cURL</a>
               <a href="#" data-language-name="ruby">ruby</a>
               <a href="#" data-language-name="python">python</a>
@@ -155,6 +156,32 @@ You can also activate your things manually at the Panel as explained on the gett
 </ul>
 
 <h2 id="activate-todo-add-command-line-example-sample-response-payload">Activate  TODO: add command line example, sample response, payload</h2>
+
+<blockquote>
+<p>Sample Payload</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"activationCode"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"{ {activation Code} }"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Everything has gone well:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"thingToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NwFbEqwEQ-ucyW8aET34EWi6L_tte6fumxTSU-Pkw"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Error:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error creating thing"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <p>Activates a thing with an activation code. The result is a thing token. You will be able to retrieve this thing token at any time from the <a href="http://panel.thethings.io/#/things-manager">panel</a></p>
 
@@ -219,6 +246,7 @@ You can also activate your things manually at the Panel as explained on the gett
       </div>
       <div class="dark-box">
           <div class="lang-selector">
+                <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
                 <a href="#" data-language-name="shell">cURL</a>
                 <a href="#" data-language-name="ruby">ruby</a>
                 <a href="#" data-language-name="python">python</a>

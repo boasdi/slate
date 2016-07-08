@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO API Reference</title>
+    <title>thethings.iO CoAp API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -206,20 +206,32 @@ You can also activate your things manually at the Panel as explained on the gett
 </span></code></pre>
 
 <blockquote>
-<p>Everything has gone well
-<code class="prettyprint">json
-{
-  &quot;status&quot;: &quot;Success&quot;,
-  &quot;message&quot;: &quot;Created&quot;
-}
-</code></p>
+<p>Everything has gone well</p>
 </blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Created"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h3 id="coap-request">CoAP Request</h3>
 
 <p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
 
 <h2 id="read-todo-add-command-line-example-sample-response-payload">Read TODO: add command line example, sample response, payload</h2>
+
+<blockquote>
+<p>Respone</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w"> </span><span class="err">(more</span><span class="w"> </span><span class="err">values)</span><span class="w"> </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
 
 <p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.</p>
 
@@ -258,6 +270,18 @@ You can also activate your things manually at the Panel as explained on the gett
 </tbody></table>
 
 <h2 id="subscribe-todo-add-command-line-example-sample-response-payload">Subscribe  TODO: add command line example, sample response, payload</h2>
+
+<blockquote>
+<p>Each time a thingWrite is sent you get:</p>
+</blockquote>
+
+<p>[
+  {
+    &ldquo;key&rdquo;: &ldquo;fun&rdquo;,
+    &ldquo;value&rdquo;: &ldquo;9000&rdquo;,
+    &ldquo;datetime&rdquo;: &ldquo;2015-01-30T15:35:33.000Z&rdquo;
+  }
+]</p>
 
 <p>This method subscribes to the thing channel and gets realtime updates. You must set the CoAP observe bit.</p>
 

@@ -191,6 +191,80 @@ You can also activate your things manually at the Panel as explained on the gett
 
 <h2 id="write-todo-add-command-line-example-sample-response-payload">Write TODO: add command line example, sample response, payload</h2>
 
+<blockquote>
+<p>Sample Payload</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"values"</span><span class="p">:</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Everything has gone well
+<code class="prettyprint">json
+{
+  &quot;status&quot;: &quot;Success&quot;,
+  &quot;message&quot;: &quot;Created&quot;
+}
+</code></p>
+</blockquote>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
+
+<h2 id="read-todo-add-command-line-example-sample-response-payload">Read TODO: add command line example, sample response, payload</h2>
+
+<p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.</p>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/resources/KEY</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>limit</td>
+<td>1</td>
+<td>Number</td>
+<td>Max. number of values to be returned (Max.: 100)</td>
+</tr>
+<tr>
+<td>startDate</td>
+<td>Jan 1st 1970</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The min date</td>
+</tr>
+<tr>
+<td>endDate</td>
+<td>End of times (Javascript)</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The max date</td>
+</tr>
+</tbody></table>
+
+<h2 id="subscribe-todo-add-command-line-example-sample-response-payload">Subscribe  TODO: add command line example, sample response, payload</h2>
+
+<p>This method subscribes to the thing channel and gets realtime updates. You must set the CoAP observe bit.</p>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">GET coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
+
 <p>Writes the records of data from the thing corresponding to the specified THINGTOKEN. Only alphanumeric characters and &ldquo;.&rdquo;, &ldquo;-&rdquo;, &ldquo;&rdquo; simbols are admited for the resource name &ldquo;key&rdquo;.</p>
 
 <h3 id="coap-request">CoAP Request</h3>

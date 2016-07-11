@@ -185,14 +185,17 @@ You can also activate your things manually at the Panel as explained on the gett
 mosquitto_sub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/activations/{ {activationcode} }/{ {random string} }"</span> -d
 
 <span class="c"># Node MQTT</span>
-mqtt sub -h <span class="s1">'mqtt.thethings.io'</span> -t <span class="s1">'v2/things/{ {thingToken} }'</span> -v
+mqtt sub -h <span class="s1">'mqtt.thethings.io'</span> -t <span class="s1">'v2/activations/{ {activationcode} }/{ {random string} }'</span> -v
 </code></pre>
 
 <blockquote>
 <p>Sample Responses:</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="c"># Each time a publish is sent you get:</span>
-<span class="o">[{</span><span class="s2">"key"</span>:<span class="s2">"fun"</span>,<span class="s2">"value"</span>:9000<span class="o">}]</span>
+<pre class="highlight shell"><code><span class="c"># Result in case of success:</span>
+<span class="o">{</span> <span class="s2">"status"</span>: <span class="s2">"created"</span>, <span class="s2">"thingToken"</span>: <span class="s2">"YOUR THING TOKEN"</span> <span class="o">}</span>
+<span class="c"># Result in case of error:</span>
+<span class="o">{</span> <span class="s2">"status"</span>: <span class="s2">"error"</span>, <span class="s2">"message"</span>: <span class="s2">"Error creating thing"</span> <span class="o">}</span>
+
 </code></pre>
 
           <h1 id="http-status-codes">HTTP Status Codes</h1>

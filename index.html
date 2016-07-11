@@ -224,6 +224,22 @@ mqtt sub -h <span class="s1">'mqtt.thethings.io'</span> -t <span class="s1">'v2/
 
 <p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN</code></p>
 
+<h2 id="publish">Publish</h2>
+<pre class="highlight shell"><code>
+<span class="c"># Mosquitto</span>
+mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/{ {thingToken} }"</span> -f data.json -d
+
+<span class="c"># Node MQTT</span>
+mqtt pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/{ {thingToken} }"</span> -m <span class="s1">'{"values":[{"key":"fun","value":9000}]}'</span>
+
+<span class="c"># data.json content</span>
+<span class="o">{</span><span class="s2">"values"</span>:[<span class="o">{</span><span class="s2">"key"</span>:<span class="s2">"fun"</span>,<span class="s2">"value"</span>:9000<span class="o">}]}</span>
+</code></pre>
+
+<p>Publish a single message on a topic. Only alphanumeric characters and &rdquo;.&ldquo;, &rdquo;-&ldquo;, &rdquo;_&ldquo; simbols are admited for the resource name &quot;key&rdquo;. </p>
+
+<p><code class="prettyprint">PUBLISH    v2/things/{ {thingToken} }</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

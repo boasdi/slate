@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO CoAp API Reference</title>
+    <title>thethings.iO API -  App Development Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -91,7 +91,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;json&quot;,&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -100,7 +100,6 @@
     </a>
     <div class="tocify-wrapper">
         <div class="lang-selector">
-              <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
               <a href="#" data-language-name="shell">cURL</a>
               <a href="#" data-language-name="ruby">ruby</a>
               <a href="#" data-language-name="python">python</a>
@@ -121,190 +120,50 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="introduction">Introduction</h1>
+        <h1 id="developing-iot-apps-with-thethings-io">Developing IoT Apps with thethings.iO</h1>
 
-<p>theThings.iO platform provides a complete backend solution for IoT Markers and IoT App Developers through an easy and flexible API. theThings.iO is hardware agnostic, that means that we don&rsquo;t force you to use a specific hardware, provided that is capable to use any of our supported protocols: HTTP, Websockets, MQTT or CoAP.</p>
+<p>This document is a guide to understand how to create apps on top of Internet of Things using thethings.iO. It&rsquo;s recommendable to read the <a href="https://developers.thethings.io/index.html">Quickstart guide</a> first to, at least, create an account and activate a thing. </p>
 
-<h1 id="things-coap">things - CoAP</h1>
+<h1 id="getting-started">Getting started</h1>
 
-<h2 id="basics-of-coap">Basics of CoAP</h2>
+<p>Apps are intended to use the HTTP API REST to work with thethings.iO Platform.</p>
 
-<p>As <a href="http://en.wikipedia.org/wiki/Constrained_Application_Protocol">Wikipedia</a> says: &lsquo;Constrained Application Protocol (CoAP) is a software protocol intended to be used in very simple electronics devices that allows them to communicate interactively over the Internet.&rsquo;&hellip;&rsquo; CoAP is designed to easily translate to HTTP for simplified integration with the web.&rsquo;</p>
+<h2 id="postman-collection">Postman Collection</h2>
 
-<p>In this page you will learn how to use theThings.IO CoAP endpoint.</p>
+<p>You can test the following examples importing this postman collection: <a href="https://www.getpostman.com/collections/56301cc95ee8e643f9e5">thethings.iO APP Dev Postman Collection</a></p>
 
-<h2 id="getting-started">Getting Started</h2>
+<p>Get Postman: <a href="http://www.getpostman.com/">Postman REST Client</a>.</p>
 
-<p>The CoAP endpoints are very similar to the REST API. There are the same methods (Activate, ThingWrite ThingRead and ThingSubscribe) and also the paths are the same. The only difference is the endpoint base url and protocol: coap.thethings.io (port 5683)</p>
+<h2 id="things-and-resources">Things and Resources</h2>
 
-<h3 id="get-tokens">Get tokens</h3>
+<p>The <strong>Things</strong> are the virtual representations of your Internet-connected devices.</p>
 
-<p>To be able to follow the examples you will need an activation code or a thing token.</p>
+<p>We can see a Thing connected to the Internet as a collection of Resources. And each Resource can be seen as a timeline.</p>
 
-<p>An activation code is a unique code that will enable your devices to be activated via the registration endpoint call. The purpose of this code is at the same time identify you as the creator of the thing and when some day you start selling your awesome IoT product, avoid that somebody can activate things in your name. As a result of this call your thing will receive a unique thing token that will identify your thing at thethings.iO platform.
-You can also activate your things manually at the Panel as explained on the getting started guide.</p>
+<p>The thing is going to publish or consume this resources. For example, a thing with a temperature sensor is going to publish temperature and a thing that is an on-off switch is going to consume a resource called turn which can take values on or off.</p>
 
-<p>If you are in the developers tier you will get some activation codes for free. If you are in the premium tier you will be able to generate as many activation codes as you need. To get your tokens go to the <a href="https://panel.thethings.io/#/things-manager/">things manager</a> page and click the get activation codes button.</p>
+<p>Everything can be a resource
+The value of a resource has not only to be a string or a number it can be an array, a json object or even a binary.</p>
 
-<h3 id="coap-test">CoAP Test</h3>
+<h1 id="making-an-iot-app">Making an IoT App</h1>
 
-<p>To test your connectivity with coap.thethings.io you have two options:</p>
+<p>Once you understand the concepts of Thing and Resource, you can start to analyze the requirements of your application.</p>
 
-<ul>
-<li>Use the coap-cli example from <a href="http://sourceforge.net/projects/libcoap/">libcoap</a></li>
-<li>Use the <a href="https://addons.mozilla.org/ca/firefox/addon/copper-270430/">Firefox plugin Copper</a>. Set the block size to late negotiation or 1024 in the behavior tab.</li>
-</ul>
+<p>You must choose a set of resources (it is possible to edit them later) that your app will be using. The possibilities are limitless. For example, you can choose temperature and humidity. Another option would be to choose steps and calories, so the application will be compatible with all the things publishing steps and/or calories (Fitbit, nikeplus,&hellip;) connected to the platform. Or maybe an application to control the energy consumption of a home using the resource power-consumption.</p>
 
-<h2 id="activate-todo-command-line-example">Activate  TODO: command line example</h2>
+<p>You can register an app from the <a href="https://panel.thethings.io/">Panel</a>. Once registered you will get an appID to identify your app.</p>
 
-<blockquote>
-<p>Sample Payload</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"activationCode"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"{ {activation Code} }"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<p>At the same Panel you have to configure which resources will ask your APP for. This resources must match with the public resources defined on your product. Product resources remain private and unnaccesible by the APPs until you explicitly define them as public. You can follow the instructions at this page (Create a new IoT Product and Create a new IoT App sections): <a href="https://developers.thethings.io/iot-panel.html">Premium Panel</a>.</p>
 
-<blockquote>
-<p>Everything has gone well:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"thingToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NwFbEqwEQ-ucyW8aET34EWi6L_tte6fumxTSU-Pkw"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<h2 id="setup">Setup</h2>
 
-<blockquote>
-<p>Error:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error creating thing"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<p>The first thing you need to do is to send the username, password and appID to register the user, then log the user in so you can get a session token.</p>
 
-<p>Activates a thing with an activation code. The result is a thing token. You will be able to retrieve this thing token at any time from the <a href="http://panel.thethings.io/#/things-manager">panel</a></p>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/</code></p>
-
-<h2 id="write-todo-add-command-line-example">Write TODO: add command line example</h2>
-
-<blockquote>
-<p>Sample Payload</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"values"</span><span class="p">:</span><span class="w">
-    </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<p>Writes the records of data from the thing corresponding to the specified THINGTOKEN. Only alphanumeric characters and &ldquo;.&rdquo;, &ldquo;-&rdquo;, &ldquo;&rdquo; simbols are admited for the resource name &ldquo;key&rdquo;. </p>
-
-<blockquote>
-<p>Everything has gone well</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Created"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
-
-<h2 id="read-todo-add-command-line-example">Read TODO: add command line example</h2>
-
-<blockquote>
-<p>Response</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="err">...</span><span class="w"> </span><span class="err">(more</span><span class="w"> </span><span class="err">values)</span><span class="w"> </span><span class="err">...</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-
-<p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.</p>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/resources/KEY</code></p>
-
-<h3 id="query-parameters">Query Parameters</h3>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Format</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>limit</td>
-<td>1</td>
-<td>Number</td>
-<td>Max. number of values to be returned (Max.: 100)</td>
-</tr>
-<tr>
-<td>startDate</td>
-<td>Jan 1st 1970</td>
-<td>YYYYMMDDHHmmss</td>
-<td>The min date</td>
-</tr>
-<tr>
-<td>endDate</td>
-<td>End of times (Javascript)</td>
-<td>YYYYMMDDHHmmss</td>
-<td>The max date</td>
-</tr>
-</tbody></table>
-
-<h2 id="subscribe-todo-add-command-line-example">Subscribe  TODO: add command line example</h2>
-
-<blockquote>
-<p>Each time a Write is sent you get:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-
-<p>This method subscribes to the thing channel and gets realtime updates. You must set the CoAP observe bit.</p>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">GET coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
-
-<h2 id="examples">Examples</h2>
-
-<h3 id="node-js">Node.js</h3>
-
-<p>The next Node.js library allows to easily connect to the coap.thethings.io endpoint.</p>
-
-<p>You can visit the github repository: <a href="https://github.com/theThings/thethingsio-coap-node">theThings.IO CoAP Node.js library</a></p>
-
-<p>And get the examples at: <a href="https://github.com/theThings/thethingsio-coap-node/tree/master/examples">theThings.IO CoAP Node.js examples</a></p>
+<p>This session token is necessary to be sent in the header Authorization in every call to the platform from now on. And will let thethings.iO to identify the user and the application. This session token also contains the list of things and resources the user has authorized the app to access.</p>
 
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
                 <a href="#" data-language-name="shell">cURL</a>
                 <a href="#" data-language-name="ruby">ruby</a>
                 <a href="#" data-language-name="python">python</a>

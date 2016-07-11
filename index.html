@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO CoAp API Reference</title>
+    <title>thethings.iO API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -91,7 +91,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;json&quot;,&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -100,7 +100,6 @@
     </a>
     <div class="tocify-wrapper">
         <div class="lang-selector">
-              <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
               <a href="#" data-language-name="shell">cURL</a>
               <a href="#" data-language-name="ruby">ruby</a>
               <a href="#" data-language-name="python">python</a>
@@ -125,176 +124,90 @@
 
 <p>theThings.iO platform provides a complete backend solution for IoT Markers and IoT App Developers through an easy and flexible API. theThings.iO is hardware agnostic, that means that we don&rsquo;t force you to use a specific hardware, provided that is capable to use any of our supported protocols: HTTP, Websockets, MQTT or CoAP.</p>
 
-<h1 id="things-coap">things - CoAP</h1>
+<h1 id="things">things</h1>
 
-<h2 id="basics-of-coap">Basics of CoAP</h2>
+<h2 id="mqtt">MQTT</h2>
 
-<p>As <a href="http://en.wikipedia.org/wiki/Constrained_Application_Protocol">Wikipedia</a> says: &lsquo;Constrained Application Protocol (CoAP) is a software protocol intended to be used in very simple electronics devices that allows them to communicate interactively over the Internet.&rsquo;&hellip;&rsquo; CoAP is designed to easily translate to HTTP for simplified integration with the web.&rsquo;</p>
+<h3 id="basics-of-mqtt">Basics of MQTT</h3>
 
-<p>In this page you will learn how to use theThings.IO CoAP endpoint.</p>
+<h4 id="what-is-mqtt">What is MQTT?</h4>
 
-<h2 id="getting-started">Getting Started</h2>
+<p>As Wikipedia says: &ldquo;MQTT (Message Queue Telemetry Transport) is a publish-subscribe based &quot;light weight&rdquo; messaging protocol for use on top of the TCP/IP protocol. It is designed for connections with remote locations where a &lsquo;small code footprint&rsquo; is required and/or network bandwidth is limited.&ldquo;</p>
 
-<p>The CoAP endpoints are very similar to the REST API. There are the same methods (Activate, ThingWrite ThingRead and ThingSubscribe) and also the paths are the same. The only difference is the endpoint base url and protocol: coap.thethings.io (port 5683)</p>
+<h4 id="publish-subscribe">Publish/Subscribe</h4>
+
+<p>When a thing publishes a message it publishes the message in a topic. A topic is like a channel where each thing subscribed to that topic will receive that message. You can imagine this like a Twitter of Things.</p>
+
+<h4 id="mqtt-broker">MQTT Broker</h4>
+
+<p>An MQTT Broker is a server where the things (from Internet of Things) using MQTT can connect. thethings.iO has a broker in mqtt.thethings.io where you can connect your apps.</p>
+
+<p>You can get more documentation about the protocol in the page mqtt.org</p>
+
+<h3 id="getting-started">Getting Started</h3>
+
+<p>MQTT thethings.iO broker host:</p>
+
+<p><code class="prettyprint">mqtt.thethings.io</code></p>
+
+<p>The port is the default for mqtt: 1883.</p>
 
 <h3 id="get-tokens">Get tokens</h3>
 
 <p>To be able to follow the examples you will need an activation code or a thing token.</p>
 
-<p>An activation code is a unique code that will enable your devices to be activated via the registration endpoint call. The purpose of this code is at the same time identify you as the creator of the thing and when some day you start selling your awesome IoT product, avoid that somebody can activate things in your name. As a result of this call your thing will receive a unique thing token that will identify your thing at thethings.iO platform.
-You can also activate your things manually at the Panel as explained on the getting started guide.</p>
+<p>An activation code is a unique code that will enable your devices to be activated. The purpose of this code is at the same time identify you as the creator of the thing and when some day you start selling your awesome IoT product, avoid that somebody can activate things in your name. As a result of this call your thing will receive a unique thing token that will identify your thing at thethings.iO platform.
+You can also activate your things manually at the Panel as explained on the getting started guide. You can activate a thing with the API REST and Coap too.</p>
 
-<p>If you are in the developers tier you will get some activation codes for free. If you are in the premium tier you will be able to generate as many activation codes as you need. To get your tokens go to the <a href="https://panel.thethings.io/#/things-manager/">things manager</a> page and click the get activation codes button.</p>
+<p>If you are in the developers tier you will get some activation codes for free. If you are in the premium tier you will be able to generate as many activation codes as you need. To get your tokens go to the things manager page and click the get activation codes button.</p>
 
-<h3 id="coap-test">CoAP Test</h3>
+<h3 id="mqtt-setup">MQTT setup</h3>
 
-<p>To test your connectivity with coap.thethings.io you have two options:</p>
+<p>To be able to follow the next examples you will need to install the package mosquitto-clients from Mosquitto or with the mqtt node package.</p>
 
-<ul>
-<li>Use the coap-cli example from <a href="http://sourceforge.net/projects/libcoap/">libcoap</a></li>
-<li>Use the <a href="https://addons.mozilla.org/ca/firefox/addon/copper-270430/">Firefox plugin Copper</a>. Set the block size to late negotiation or 1024 in the behavior tab.</li>
-</ul>
+<h4 id="mosquitto">Mosquitto</h4>
 
-<h2 id="activate-todo-command-line-example">Activate  TODO: command line example</h2>
+<p><code class="prettyprint">sudo apt-get install mosquitto-clients</code></p>
 
-<blockquote>
-<p>Sample Payload</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"activationCode"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"{ {activation Code} }"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<p><code class="prettyprint">brew install mosquitto</code></p>
 
-<blockquote>
-<p>Everything has gone well:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"thingToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NwFbEqwEQ-ucyW8aET34EWi6L_tte6fumxTSU-Pkw"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<p><code class="prettyprint">sudo npm install mqtt -g</code></p>
 
-<blockquote>
-<p>Error:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error creating thing"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<h4 id="node-mqtt">Node MQTT</h4>
 
-<p>Activates a thing with an activation code. The result is a thing token. You will be able to retrieve this thing token at any time from the <a href="http://panel.thethings.io/#/things-manager">panel</a></p>
+<p><code class="prettyprint">sudo npm install mqtt -g</code></p>
 
-<h3 id="coap-request">CoAP Request</h3>
+          <h1 id="http-status-codes">HTTP Status Codes</h1>
 
-<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/</code></p>
-
-<h2 id="write-todo-add-command-line-example">Write TODO: add command line example</h2>
-
-<blockquote>
-<p>Sample Payload</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"values"</span><span class="p">:</span><span class="w">
-    </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<p>Writes the records of data from the thing corresponding to the specified THINGTOKEN. Only alphanumeric characters and &ldquo;.&rdquo;, &ldquo;-&rdquo;, &ldquo;&rdquo; simbols are admited for the resource name &ldquo;key&rdquo;. </p>
-
-<blockquote>
-<p>Everything has gone well</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Created"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
-
-<h2 id="read-todo-add-command-line-example">Read TODO: add command line example</h2>
-
-<blockquote>
-<p>Response</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="err">...</span><span class="w"> </span><span class="err">(more</span><span class="w"> </span><span class="err">values)</span><span class="w"> </span><span class="err">...</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-
-<p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.</p>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/resources/KEY</code></p>
-
-<h3 id="query-parameters">Query Parameters</h3>
+<p>Our API uses the following status codes:</p>
 
 <table><thead>
 <tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Format</th>
-<th>Description</th>
+<th>HTTP Status Code</th>
+<th>Message</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>limit</td>
-<td>1</td>
-<td>Number</td>
-<td>Max. number of values to be returned (Max.: 100)</td>
+<td>201</td>
+<td>Created</td>
 </tr>
 <tr>
-<td>startDate</td>
-<td>Jan 1st 1970</td>
-<td>YYYYMMDDHHmmss</td>
-<td>The min date</td>
+<td>400</td>
+<td>Bad Request</td>
 </tr>
 <tr>
-<td>endDate</td>
-<td>End of times (Javascript)</td>
-<td>YYYYMMDDHHmmss</td>
-<td>The max date</td>
+<td>401</td>
+<td>Unauthorized</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found</td>
 </tr>
 </tbody></table>
-
-<h2 id="subscribe-todo-add-command-line-example">Subscribe  TODO: add command line example</h2>
-
-<blockquote>
-<p>Each time a Write is sent you get:</p>
-</blockquote>
-<pre class="highlight json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-
-<p>This method subscribes to the thing channel and gets realtime updates. You must set the CoAP observe bit.</p>
-
-<h3 id="coap-request">CoAP Request</h3>
-
-<p><code class="prettyprint">GET coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
 
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="json">Sample Payload / Sample Response</a>
                 <a href="#" data-language-name="shell">cURL</a>
                 <a href="#" data-language-name="ruby">ruby</a>
                 <a href="#" data-language-name="python">python</a>

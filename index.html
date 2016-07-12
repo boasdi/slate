@@ -498,6 +498,77 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 </tr>
 </tbody></table>
 
+<h2 id="subscribe-to-resource-values">Subscribe to resource values</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources/temperature?subscribe=true&amp;keepAlive={ {time_ms} }"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">[</span>
+  <span class="o">{</span>
+    <span class="s2">"value"</span>:15,
+    <span class="s2">"id"</span>: <span class="s2">"thingId1"</span>
+  <span class="o">}</span>
+<span class="o">]</span>
+</code></pre>
+
+<p>Endpoint to subscribe to the real-time updates. Once subscribed, you&rsquo;ll receive a message each time that the resource receives a new value.</p>
+
+<p>If there are no updates the server will send {} after keepAlive ms. You should also keep a timer, and if you don’t receive updates after keepAlive time isexpired, yo have to resubscribe. This could happen if the wifi is down or something happens to the connection.</p>
+
+<p>To subscribe from a browser we recommend to use <a href="https://developers.thethings.io/app-development-websocket.html">Websocket</a>. REST API subscription is not reliable on browsers.</p>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/{ {resource} }?subscribe=true&amp;keepAlive={ {time_ms} }</code></p>
+
+<h2 id="thing-39-s-description">Thing&rsquo;s description</h2>
+
+<p>There’s a special resource called description that can contain meta-data about the thing. This meta-data could be the Thing name (chosen by the user), geocoordinates, JSON objects and any other data the developer want to put there.</p>
+
+<p>This resource is accesible the same way that all the resources. With the get and put resource values.</p>
+
+<p>Before you modify this resource, you have to get the actual description value, change the properties you want to modify and the store the complete document again.</p>
+
+<h3 id="http-requests">HTTP Requests</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/description</code></p>
+
+<p><code class="prettyprint">PUT    https ://api.thethings.io/v2/me/resources/description/{ {thingId} }</code></p>
+
+<h2 id="user-39-s-settings">User&rsquo;s settings</h2>
+
+<p>Sometimes the app needs to store additional data about the user (gender, avatar, hair color,&hellip;) in that case the app can use the endpoint &rsquo;/me/settings&rsquo; in order to set and get the user’s settings. The user’s settings are not meant to store large amounts of data. It’s more likely a small key/value store.</p>
+
+<p>Note: If your app needs to store more complex data please look at the section Objects. Storing App data</p>
+
+<h2 id="update-settings">Update settings</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"hair-color": "pink", "phones": ["13246578","99833212"]}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/settings"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'updated'</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>Updates the settings key/value object.</p>
+
+<p>There’s a special key: <strong>password</strong> that will update the user’s password with the app.</p>
+
+<h3 id="http-requests">HTTP Requests</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/settings</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

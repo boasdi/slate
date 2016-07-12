@@ -801,6 +801,50 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p>without creating :primarykey1 will not return error and will work, but then you should remember somehow :primaryKey1</p>
 
+<h1 id="link-thing">Link Thing</h1>
+
+<h2 id="how-to-link-a-thing">How to Link a Thing</h2>
+
+<p>Before getting the user&rsquo;s data from a thing, it is necessary a procedure called <strong>link thing</strong> which allows the platform to know that the user is the owner of the thing.</p>
+
+<p>In order to link the thing the user must be logged in and the thing must be activated.</p>
+
+<p>thethings.iO provide the next options to associate a thing to an user&rsquo;s app:</p>
+
+<ul>
+<li>Link Thing with the thingToken</li>
+<li>Link Thing with a shared id from the device</li>
+</ul>
+
+<h3 id="link-thing-from-an-app-with-the-thingtoken">Link Thing from an App with the thingToken</h3>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"thingToken": "{ {thingToken} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The easiest way to link a thing is when the user provides the thingToken to the app. The thingToken could be printed at the users&rsquo; manual, or printed on a card inside the packaging or received after registering the thing at your product&rsquo;s web. There are many ways to do this.</p>
+
+<p>Once the App gets the thingToken from the user, the App has to perform the next operation:</p>
+
+<h4 id="http-request">HTTP Request</h4>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things</code></p>
+
+<p>At this point the App has access to the user&rsquo;s thing data.</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

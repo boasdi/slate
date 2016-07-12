@@ -779,6 +779,28 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }?subscribe=true&amp;keepAlive={ {time_ms} }</code></p>
 
+<h2 id="object-relations">Object Relations</h2>
+
+<p>It is possible to add more path segments in these queries to be able to represent 1 - N binary relations, example:</p>
+
+<p><code class="prettyprint">/classes/me/Playlists/25/Songs/100/</code></p>
+
+<p>or ternary relations</p>
+
+<p><code class="prettyprint">/classes/me/Playlists/25/Songs/100/Artist/10/ ...</code></p>
+
+<p>However that routes are not equivalent to:</p>
+
+<p><code class="prettyprint">/classes/me/Songs/100/Playlist/25   or  /classes/me/Songs/100/Playlist/25/Artist/10</code></p>
+
+<p><strong>So, the ordering matters.</strong></p>
+
+<p>Note that doing:</p>
+
+<p><code class="prettyprint">POST /classes/me/:idCollection1/:primaryKey1/:idCollection2/:primaryKey2/</code></p>
+
+<p>without creating :primarykey1 will not return error and will work, but then you should remember somehow :primaryKey1</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

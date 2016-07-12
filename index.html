@@ -430,6 +430,74 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 </tr>
 </tbody></table>
 
+<h2 id="get-all-resource-values">Get all resource values</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/all_resources/{ {thingId} }"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">[</span>
+    <span class="o">{</span>
+        key: <span class="s1">'temperature'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 23, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        key: <span class="s1">'voltage'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 5, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        key: <span class="s1">'current'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 0.32, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        key: <span class="s1">'status'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: <span class="s1">'ok'</span>, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>
+<span class="o">]</span>
+</code></pre>
+
+<p>This endpoint returns the last(s) values of all the resources.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/all_resources/{ {thingId} }</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>limit</td>
+<td>1</td>
+<td>Number</td>
+<td>Max. number of values to be returned (Max.: 100)</td>
+</tr>
+<tr>
+<td>startDate</td>
+<td>Jan 1st 1970</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The min date</td>
+</tr>
+<tr>
+<td>endDate</td>
+<td>End of times (Javascript)</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The max date</td>
+</tr>
+</tbody></table>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

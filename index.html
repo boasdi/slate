@@ -693,6 +693,92 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><code class="prettyprint">PUT    https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
 
+<h2 id="get-object">Get Object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"results"</span> : <span class="o">[</span>
+    <span class="o">{</span>
+      _id: 25,
+      <span class="s2">"name"</span>: <span class="s2">"Dubstep Mix"</span>,
+      <span class="s2">"duration"</span> : 180
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Returns the object stored with this key.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="get-collection-of-objects">Get collection of objects</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"results"</span> : <span class="o">[</span>
+    <span class="o">{</span>
+      _id: 25,
+      <span class="s2">"name"</span>: <span class="s2">"Dubstep Mix"</span>,
+      <span class="s2">"duration"</span> : 180
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      _id: 20,
+      <span class="s2">"name"</span>: <span class="s2">"Classic"</span>,
+      <span class="s2">"duration"</span> : 90
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>Returns all the collection&rsquo;s objects ordered by primary key descending.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }</code></p>
+
+<h2 id="subscribe-to-collection">Subscribe to collection</h2>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -X GET https://api.thethings.io/v2/classes/me/Playlists?subscribe<span class="o">=</span><span class="nb">true</span>&amp;keepAlive<span class="o">=</span>2000 -H
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="o">[</span>
+  <span class="o">{</span>
+    _id: 20,
+    <span class="s2">"name"</span>: <span class="s2">"Classic"</span>,
+    <span class="s2">"duration"</span> : 90
+  <span class="o">}</span>
+<span class="o">]</span>
+</code></pre>
+
+<p>Subscribes to collection updates. When somebody updates the collection you will be notified.</p>
+
+<p>Also note that /classes/me/:idCollection1/ is not considered to be the same collection as /classes/me/:idCollection1/:primaryKey1/:idCollection2 , so you have to subscribe both.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }?subscribe=true&amp;keepAlive={ {time_ms} }</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

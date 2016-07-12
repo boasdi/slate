@@ -257,6 +257,99 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p>If you didn&rsquo;t activated a thing, go to the <a href="https://developers.thethings.io/index.html#step2">Quickstart guide</a>, and activate at least one.</p>
 
+<h3 id="link-thing">Link Thing</h3>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"thingToken": "{ {thingToken} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"created"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Before getting the user&rsquo;s data from a thing, it is necessary a procedure called <strong>link thing</strong> which allows the platform to know that the user is the owner of the thing.</p>
+
+<p>This procedure needs a thingToken (or the thingId) and a session token. And it requires some kind of direct communication between the app and the thing. For example, when setting up the wifi for the thing and the ssid and password are sent to the thing, it’s a good moment to ask for the thingToken of the thing. With this thingToken, the App will be able to do the REST call to link the think to the user and store the relation at the platform.
+Note that in order to link the thing the user must be logged in and the thing must be activated (i.e. have a thingToken)</p>
+
+<p>This operation can only be done for applications which have been authorized for the thing developer, this kind of apps are called official apps.</p>
+
+<p>For advanced strategies on linking things, check the &lsquo;Link Thing&rsquo; section.</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things</code></p>
+
+<h2 id="accessing-the-user-39-s-resources">Accessing the user&rsquo;s resources</h2>
+
+<p>To be able to access the user’s resources (i.e. the things data) the user must have authorized the app to see this resources.</p>
+
+<p>To check which resources has the user available we can call the GET /resources endpoint. Then if we are interested in some of his resources we can ask the user to grant the app permissions to use them. For each resource and thing, there are three types of permissions: get, post and grant. Get and post are equivalent to read and write. Grant allows the app to grant this permission to more users.</p>
+
+<p>When an app asks permissions, the platform sends a confirmation email in background to the user to check if the user is aware of this action. The user must confirm before the application can access the data. There is an exception, <strong>when the app is an official app the permissions are granted automatically.</strong></p>
+
+<h2 id="get-resources">Get resources</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># This result tells us that the user has the resource temperature</span>
+<span class="c"># for the thing with id "thingId1" and the thing with id "thingId2"</span>
+<span class="o">[</span>
+  <span class="o">{</span>
+    <span class="s2">"name"</span> : <span class="s2">"temperature"</span>,
+    <span class="s2">"things"</span> : <span class="o">[</span><span class="s2">"thingId1"</span>, <span class="s2">"thingId2"</span><span class="o">]</span>
+  <span class="o">}</span>,
+  <span class="o">{</span>
+    <span class="s2">"name"</span>: <span class="s2">"another resource name"</span>,
+    <span class="s2">"things"</span> : <span class="o">[</span><span class="s2">"thingId2"</span>, <span class="s2">"thingId3"</span>, ...]
+  <span class="o">}</span>,
+  ...
+<span class="o">]</span>
+
+</code></pre>
+
+<p>Get the user&rsquo;s resources and the things associated to each resource.</p>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources</code></p>
+
+<h2 id="grant">Grant</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"permissions": {"temperature":{"thingId1":{"get": true, "grant": true}}}}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/grant"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'granted'</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>Asks the user to grant permissions to the app, so the app can access the user&rsquo;s resources.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/grant</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

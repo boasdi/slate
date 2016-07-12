@@ -350,6 +350,86 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/grant</code></p>
 
+<h2 id="sharing-resources">Sharing resources</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"email": "friend@email.com", permissions": {"temperature":{"thingId1":{"get": true}}}}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/grant"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'granted'</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>When a user wants to give access to his or her resources to another user, the app can use the grant endpoint. But this time the app has to pass the email of the granted user. The granter user will also receive an email to confirm this action.</p>
+
+<p>At the next example, we let the user’s friend to read the thingId1’s temperature. She won’t be able to grant this resource to anybody else as we aren’t granting her the grant permission. Also it is not possible to grant permissions that the session-token doesn’t have.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/grant</code></p>
+
+<h2 id="get-resource-values">Get resource values</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources/temperature"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"thingId1"</span> : <span class="o">[</span>
+    <span class="o">{</span><span class="s2">"value"</span>:15, <span class="s2">"datetime"</span> : <span class="s2">"20150202T220035.00Z"</span><span class="o">}</span>,
+    <span class="o">{</span><span class="s2">"value"</span>:17, <span class="s2">"datetime"</span> : <span class="s2">"20150202T210035.00Z"</span><span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This endpoint returns the values of the specified resource.</p>
+
+<h2 id="http-request">HTTP Request</h2>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/{ {resource} }</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>limit</td>
+<td>1</td>
+<td>Number</td>
+<td>Max. number of values to be returned (Max.: 100)</td>
+</tr>
+<tr>
+<td>startDate</td>
+<td>Jan 1st 1970</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The min date</td>
+</tr>
+<tr>
+<td>endDate</td>
+<td>End of times (Javascript)</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The max date</td>
+</tr>
+</tbody></table>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

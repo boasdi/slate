@@ -569,6 +569,59 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/settings</code></p>
 
+<h2 id="get-settings">Get settings</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/settings"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"hair-color"</span> : <span class="s2">"pink"</span>,
+  <span class="s2">"phones"</span> : <span class="o">[</span><span class="s2">"123456"</span>, <span class="s2">"998965"</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Retrieve the settings object.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/settings</code></p>
+
+<h2 id="get-server-date">Get Server Date</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/utils/date/?format=UTC"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"date"</span>: <span class="s2">"2016-03-15T14:14:09.051Z"</span>,
+  <span class="s2">"values"</span>: <span class="o">[</span>
+    <span class="o">{</span>
+      <span class="s2">"value"</span>: <span class="s2">"2016-03-15T14:14:09.051Z"</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Retrieve the date of the server. The param format accepts two values: &#39;UTC&rsquo; and &#39;unix_timestamp&rsquo;.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https ://api.thethings.io/v2/utils/date/?format=UTC</code></p>
+
+<h2 id="objects-storing-app-data">Objects. Storing App data.</h2>
+
+<p>When the application needs to store objects more complex than the key-value settings it can use the endpoint <strong>/classes/</strong>
+<em>This endpoint is highly flexible storing 1 - N relationships. And with a few tricks it’s possible to represent more complex relations.</em></p>
+
+<p><em>The endpoint divide in two paths.</em> <strong>/classes/me/ and /classes/app/</strong>. The first one is only accessible by the user who stored the object. The second one allows any app user to retrieve the data. You must add the authorization header with the session token in all the calls. From now on, /me is equivalent to /app</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

@@ -648,6 +648,51 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><code class="prettyprint">POST   https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
 
+<h2 id="delete-an-object">Delete an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X DELETE <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"deleted"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Delete an object by _id.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE     https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="update-an-object">Update an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"name": "Dubstep Mix", "duration": 180}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'updated'</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Change the values from an object. If there are some values which are not overwritten, this values won’t be deleted.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

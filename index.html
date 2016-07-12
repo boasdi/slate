@@ -921,6 +921,35 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <h2 id="how-to-unlink-a-thing-inverse-operation">How to Unlink a Thing (inverse operation)</h2>
 
+<p>If you want to remove the ownership of a thing from a user it&rsquo;s necessary a procedure called <strong>unlink thing</strong> (inverse to the previous link-thing) which allows the platform to know that the user is no longer the owner of the thing.</p>
+
+<p>In order to unlink the thing the user must be logged in and the thing must be activated and previously linked.</p>
+
+<h3 id="unlink-thing-from-an-app-with-the-thingid">Unlink thing from an App with the thingId</h3>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X DELETE <span class="s2">"https://api.thethings.io/v2/me/things/{ { thingId } }"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"unlinked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The thingId could be retrieved from the GET:/me/things or GET:/me/resources.</p>
+
+<h4 id="http-request">HTTP Request</h4>
+
+<p><code class="prettyprint">DELETE     https://api.thethings.io/v2/me/things</code></p>
+
+<p>At this point the App don&rsquo;t has longer access to the user&rsquo;s thing data.</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

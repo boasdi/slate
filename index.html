@@ -622,6 +622,32 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p><em>The endpoint divide in two paths.</em> <strong>/classes/me/ and /classes/app/</strong>. The first one is only accessible by the user who stored the object. The second one allows any app user to retrieve the data. You must add the authorization header with the session token in all the calls. From now on, /me is equivalent to /app</p>
 
+<h2 id="store-an-object">Store an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"_id": "25", "name": "Dubstep"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>:<span class="s2">"created"</span>,
+  <span class="s2">"id"</span>:<span class="s2">"25"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This endpoint lets you store an object as a JSON string. If you don’t specify an _id, the system will automatically assign a random id. Returns error if the _id already exists for that collection.</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/classes/me/{ {idCollection} }</code></p>
+
+<p>You can set the _id at the path, too.</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

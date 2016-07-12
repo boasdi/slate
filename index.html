@@ -151,15 +151,105 @@ The value of a resource has not only to be a string or a number it can be an arr
 
 <p>You must choose a set of resources (it is possible to edit them later) that your app will be using. The possibilities are limitless. For example, you can choose temperature and humidity. Another option would be to choose steps and calories, so the application will be compatible with all the things publishing steps and/or calories (Fitbit, nikeplus,&hellip;) connected to the platform. Or maybe an application to control the energy consumption of a home using the resource power-consumption.</p>
 
-<p>You can register an app from the <a href="https://panel.thethings.io/">Panel</a>. Once registered you will get an appID to identify your app.</p>
+<p>You can register an app from the <a href="https://panel.thethings.io/">Panel</a>. Once registered you will <strong>get an appID to identify your app.</strong></p>
 
-<p>At the same Panel you have to configure which resources will ask your APP for. This resources must match with the public resources defined on your product. Product resources remain private and unnaccesible by the APPs until you explicitly define them as public. You can follow the instructions at this page (Create a new IoT Product and Create a new IoT App sections): <a href="https://developers.thethings.io/iot-panel.html">Premium Panel</a>.</p>
+<p>At the same Panel you have to configure which resources will ask your APP for. <strong>This resources must match with the public resources defined on your product.</strong> Product resources remain private and unnaccesible by the APPs until you explicitly define them as public. You can follow the instructions at this page (Create a new IoT Product and Create a new IoT App sections): <a href="https://developers.thethings.io/iot-panel.html">Premium Panel</a>.</p>
 
 <h2 id="setup">Setup</h2>
 
-<p>The first thing you need to do is to send the username, password and appID to register the user, then log the user in so you can get a session token.</p>
+<p>The first thing you need to do is to send the username, password and appID to register the user, then log the user in so you can get a <strong>session token.</strong></p>
 
-<p>This session token is necessary to be sent in the header Authorization in every call to the platform from now on. And will let thethings.iO to identify the user and the application. This session token also contains the list of things and resources the user has authorized the app to access.</p>
+<p>This <strong>session token</strong> is necessary to be sent in the header Authorization in every call to the platform from now on. And will let thethings.iO to identify the user and the application. This session token also contains the list of things and resources the user has authorized the app to access.</p>
+
+<h1 id="register">Register</h1>
+<pre class="highlight shell"><code>
+<span class="c"># Curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -d <span class="s1">'{"email": "YOUR EMAIL HERE", "password": "a hard to guess password", "app": "The appID given in the panel"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/register"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"token"</span>: <span class="s2">"5w3iea4uCCNPkLNkm6R6OpyOPXo"</span>,
+  <span class="s2">"expirationDate"</span>: 31536000, //seconds till token expiration
+  <span class="s2">"roles"</span>: <span class="o">{</span>
+    <span class="s2">"RSRC_description"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"RSRC_temperature"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"user created"</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>Register an App user at thethings.iO Platform. This endpoint also login the user (returns the session token and roles), so you don&rsquo;t have to do another api call to login him.</p>
+
+<h2 id="http-request">HTTP Request</h2>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/register</code></p>
+
+<h1 id="login">Login</h1>
+<pre class="highlight shell"><code>url -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -d <span class="s1">'{"email": "YOUR EMAIL HERE", "password": "a hard to guess password", "app": "The appID given in the panel"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/login"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"token"</span>: <span class="s2">"5w3iea4uCCNPkLNkm6R6OpyOPXo"</span>,
+  <span class="s2">"expirationDate"</span>: 31536000, //seconds till token expiration
+  <span class="s2">"roles"</span>: <span class="o">{</span>
+    <span class="s2">"RSRC_description"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"RSRC_temperature"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Login an App user at thethings.iO Platform. Returns the session token and roles. Roles identifies the resources and things that the user has authorized the App to access.</p>
+
+<h2 id="http-request">HTTP Request</h2>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/login</code></p>
 
       </div>
       <div class="dark-box">

@@ -845,6 +845,80 @@ curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\
 
 <p>At this point the App has access to the user&rsquo;s thing data.</p>
 
+<h3 id="link-thing-with-a-shared-id-from-the-device">Link Thing with a shared id from the device</h3>
+
+<blockquote>
+<p>App endpoint</p>
+</blockquote>
+<pre class="highlight shell"><code>
+
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"linkId": "{ {serial} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things/link-id"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="c"># If the thing hasn't done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"waiting for thing"</span>
+<span class="o">}</span>
+
+<span class="c"># If the thing has done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Device Endpoint</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -d <span class="s1">'{"linkId": "{ {serial} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/things/{ {thingToken} }/link-id"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># If the app hasn't done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"waiting for app"</span>
+<span class="o">}</span>
+
+<span class="c"># If the app has done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>There are some use cases where the App can&rsquo;t know about the thingToken. For this scenarios, the thing and the app has to work together to proceed to link the thing to the user&rsquo;s app.</p>
+
+<p>This is solved creating a shared serial string/number. For example, if a thing like an scale creates a Wi-Fi network, you can use the Wi-Fi SSID to provide a serial string to the app (the app can check for the Wi-Fi networks until recognizes a patron on a SSID).</p>
+
+<p>In this scenario, both, the App and the Thing can start the linking process using this shared serial and wait for the other part to complete the link process. There is a limit of 24 hours to complete the process, if not this has to be restarted.</p>
+
+<p>The App endpoint:</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things/link-id</code></p>
+
+<p>The device endpoint:</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/things/{ {thingToken} }/link-id</code></p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

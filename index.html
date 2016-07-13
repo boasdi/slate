@@ -600,6 +600,60 @@ Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got whe
 
 <p><code class="prettyprint">GET https://api.thethings.io/v2/things/THING_TOKEN/resources</code></p>
 
+<h2 id="get-tags">Get Tags</h2>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span>   -X GET <span class="s2">"https://api.thethings.io/v2/things/zR_I1SfhRZnAgIIQ0WkhjVxzlEVN9jei4I_2MJitSXs/tags"</span> -N
+</code></pre>
+
+<blockquote>
+<p>Sample Responses</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="c"># No tags defined yet</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"tags"</span>: <span class="o">[]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Returns the tags of the thing.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://api.thethings.io/v2/things/THING_TOKEN/tags</code></p>
+
+<h2 id="add-tag">Add tag</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>   -d <span class="s1">'{"name": "test2"}'</span>   -X POST <span class="s2">"https://api.thethings.io/v2/things/zR_I1SfhRZnAgIIQ0WkhjVxzlEVN9jei4I_2MJitSXs/tags"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Request Body Sample</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+    <span class="s2">"name"</span>:<span class="s2">"test"</span>
+<span class="o">}</span>
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"tags"</span>: <span class="o">[</span>
+    <span class="o">{</span>
+      <span class="s2">"_id"</span>: <span class="s2">"test"</span>,
+      <span class="s2">"name"</span>: <span class="s2">"test"</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Add tag to a thing.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST https://api.thethings.io/v2/things/THING_TOKEN/tags</code></p>
+
 <h2 id="examples">Examples</h2>
 
 <h3 id="node-js">Node.js</h3>

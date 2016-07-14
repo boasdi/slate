@@ -670,6 +670,22 @@ Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got whe
 
 <p><code class="prettyprint">DELETE https://api.thethings.io/v2/things/THING_TOKEN/tags/TAG_ID</code></p>
 
+<h2 id="last-seen">Last Seen</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>    -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/lastseen"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>,<span class="s2">"lastseen"</span>:<span class="s2">"2016-06-22T15:10:48.647Z"</span><span class="o">}</span>
+</code></pre>
+
+<p>Returns the moment of the last activity of a thing.</p>
+
+<h4 id="http-request">HTTP Request</h4>
+
+<p><code class="prettyprint">GET api.thethings.io/v2/things/THING_TOKEN/lastseen</code></p>
+
 <h2 id="examples">Examples</h2>
 
 <h3 id="node-js">Node.js</h3>

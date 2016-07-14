@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO CoAp API Reference</title>
+    <title>thethings.iO Cloud Code API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -200,6 +200,32 @@
 <p>And the exposed services described at our documentation: Exposed APIs</p>
 
 <h1 id="triggers">Triggers</h1>
+
+<h2 id="triggers">Triggers</h2>
+
+<p>Triggers are snippets of code executed after an event happens like a thingWrite. You can use a trigger to send an alarm or generate an event to be aggregated later. Also you can call external web services.</p>
+
+<p>Each trigger must contain a <strong>function trigger(params, callback)</strong></p>
+
+<p>Where:</p>
+
+<p><strong>params</strong> is an object with the keys:</p>
+
+<ul>
+<li>   action: one of &#39;write&rsquo; | &#39;read&rsquo;</li>
+<li>   thingToken: the thing that triggered the trigger</li>
+<li>   values: only if action == &#39;write&rsquo;. Is an array of values where each value is an object with:
+
+<ul>
+<li>key: the key
+value: the data sent
+datetime: (can be null)</li>
+</ul></li>
+</ul>
+
+<p>callback is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p>
+
+<p>The execution of a trigger is limited to 2 seconds. If the execution takes longer, the server will end the sandbox.</p>
 
 <h1 id="jobs">Jobs</h1>
 

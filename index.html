@@ -622,7 +622,7 @@ Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got whe
 <p><code class="prettyprint">GET https://api.thethings.io/v2/things/THING_TOKEN/tags</code></p>
 
 <h2 id="add-tag">Add tag</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>   -d <span class="s1">'{"name": "test2"}'</span>   -X POST <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/tags"</span> -k
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>   -d <span class="s1">'{"name": "test"}'</span>   -X POST <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/tags"</span> -k
 </code></pre>
 
 <blockquote>
@@ -661,6 +661,8 @@ Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got whe
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
+<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>,<span class="s2">"tags"</span>:[<span class="o">{</span><span class="s2">"_id"</span>:<span class="s2">"test-test"</span>,<span class="s2">"name"</span>:<span class="s2">"test test"</span><span class="o">}]}</span>
+</code></pre>
 
 <p>Remove a tag from a thing. Use &#39;Get Tags&rsquo; to obtain the id of the tag you want to delete.</p>
 

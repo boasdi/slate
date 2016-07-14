@@ -203,8 +203,38 @@
 
 <h2 id="triggers">Triggers</h2>
 
+<p>Triggers are snippets of code executed after an event happens like a thingWrite. You can use a trigger to send an alarm or generate an event to be aggregated later. Also you can call external web services.</p>
+
+<p>Each trigger must contain a <strong>function trigger(params, callback)</strong></p>
+
+<p>Where:</p>
+
+<p><strong>params</strong> is an object with the keys:</p>
+
+<ul>
+<li>   action: one of &#39;write&rsquo; | &#39;read&rsquo;</li>
+<li>   thingToken: the thing that triggered the trigger</li>
+<li>   values: only if action == &#39;write&rsquo;. Is an array of values where each value is an object with:
+
+<ul>
+<li>key: the key</li>
+<li>value: the data sent</li>
+<li>datetime: (can be null)</li>
+</ul></li>
+</ul>
+
+<p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p>
+
+<p>The execution of a trigger is <strong>limited to 2 seconds.</strong> If the execution takes longer, the server will end the sandbox.</p>
+
+<p>See the javascript section for an example.</p>
+
+<h2 id="setup-alarm">Setup Alarm</h2>
+
+<p>The example code provided here sends an email when the temperature is higher than 50 degrees to &#39;to@receiver.com&rsquo;. </p>
+
 <blockquote>
-<p>Setup Alarm: This code sends an email when the temperature is higher than 50 degrees to &#39;to@receiver.com&rsquo;. </p>
+<p>This code sends an email when the temperature is higher than 50 degrees to &#39;to@receiver.com&rsquo;. </p>
 </blockquote>
 <pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'trigger triggered!!'</span><span class="p">)</span>
@@ -239,32 +269,6 @@
   <span class="nx">callback</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre>
-
-<p>Triggers are snippets of code executed after an event happens like a thingWrite. You can use a trigger to send an alarm or generate an event to be aggregated later. Also you can call external web services.</p>
-
-<p>Each trigger must contain a <strong>function trigger(params, callback)</strong></p>
-
-<p>Where:</p>
-
-<p><strong>params</strong> is an object with the keys:</p>
-
-<ul>
-<li>   action: one of &#39;write&rsquo; | &#39;read&rsquo;</li>
-<li>   thingToken: the thing that triggered the trigger</li>
-<li>   values: only if action == &#39;write&rsquo;. Is an array of values where each value is an object with:
-
-<ul>
-<li>key: the key</li>
-<li>value: the data sent</li>
-<li>datetime: (can be null)</li>
-</ul></li>
-</ul>
-
-<p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p>
-
-<p>The execution of a trigger is <strong>limited to 2 seconds.</strong> If the execution takes longer, the server will end the sandbox.</p>
-
-<p>See the javascript section for an example.</p>
 
 <h1 id="jobs">Jobs</h1>
 

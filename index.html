@@ -292,6 +292,83 @@
 <blockquote>
 <p>This code shows how you can combine geolib and the geolocation of your things to send an email when your thing is not inside a predefined circle.</p>
 </blockquote>
+<pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">MAX_DISTANCE</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="c1">//ignore non write events</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="s1">'write'</span><span class="p">){</span>
+   <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">position</span> <span class="o">=</span> <span class="kc">null</span>
+  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">){</span>
+   <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">'location'</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">geo</span><span class="p">){</span>
+     <span class="nx">position</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">geo</span>
+    <span class="p">}</span>
+   <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="c1">//also we ignore the keys that are not location and don't have geolocation</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">position</span><span class="p">){</span>
+   <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">}</span>
+  <span class="c1">//get the thing description resource</span>
+  <span class="nx">httpRequest</span><span class="p">({</span>
+    <span class="na">host</span><span class="p">:</span> <span class="s1">'api.thethings.io'</span><span class="p">,</span>
+    <span class="na">path</span><span class="p">:</span> <span class="s1">'/v2/things/'</span><span class="o">+</span><span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span><span class="o">+</span><span class="s1">'/resources/description'</span>
+  <span class="p">},</span><span class="nx">response</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">position</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">response</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">position</span><span class="p">){</span>
+ <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">){</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+      <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+     <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+     <span class="c1">//ensure that the description is defined with coordinates</span>
+     <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="o">!</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span><span class="p">){</span>
+         <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'description not defined with coordinates'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
+     <span class="p">}</span>
+     <span class="kd">var</span> <span class="nx">coordinates</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span>
+     <span class="c1">//check if the position is inside the circle</span>
+     <span class="kd">var</span> <span class="nx">inside</span> <span class="o">=</span> <span class="nx">geolib</span><span class="p">.</span><span class="nx">isPointInCircle</span><span class="p">(</span>
+        <span class="p">{</span><span class="na">latitude</span><span class="p">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">lat</span><span class="p">,</span> <span class="na">longitude</span><span class="p">:</span> <span class="nx">position</span><span class="p">.</span><span class="kr">long</span><span class="p">},</span>
+        <span class="p">{</span><span class="na">latitude</span><span class="p">:</span> <span class="nx">coordinates</span><span class="p">.</span><span class="nx">lat</span><span class="p">,</span> <span class="na">longitude</span><span class="p">:</span> <span class="nx">coordinates</span><span class="p">.</span><span class="kr">long</span><span class="p">},</span>
+        <span class="nx">MAX_DISTANCE</span>
+    <span class="p">);</span>
+     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'inside'</span><span class="p">,</span> <span class="nx">inside</span><span class="p">,</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">)</span>
+     <span class="c1">//generate an analytics event to get data insigts later</span>
+     <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'inside'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">inside</span><span class="p">})</span>
+     <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">inside</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">){</span>
+       <span class="c1">//if the email is defined send a warning email</span>
+      <span class="nx">sendWarningEmail</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span><span class="nx">position</span><span class="p">)</span>
+     <span class="p">}</span>
+     <span class="nx">callback</span><span class="p">()</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//this function geneartes and sends a cool warning email</span>
+<span class="kd">function</span> <span class="nx">sendWarningEmail</span><span class="p">(</span><span class="nx">receiver</span><span class="p">,</span> <span class="nx">coords</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">coordsStr</span> <span class="o">=</span> <span class="s1">'&lt;a href="https://www.google.com/maps/dir//'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">'/@'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">',15z"&gt;https://www.google.com/maps/dir//'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">'/@'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">',15z&lt;/a&gt;'</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'sending email to'</span><span class="p">,</span> <span class="nx">receiver</span><span class="p">)</span>
+  <span class="nx">email</span><span class="p">(</span>
+    <span class="p">{</span>
+      <span class="na">service</span><span class="p">:</span> <span class="s1">'SendGrid'</span><span class="p">,</span>
+      <span class="na">auth</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">api_user</span><span class="p">:</span> <span class="s1">'YOUR API USER'</span><span class="p">,</span>
+        <span class="na">api_key</span><span class="p">:</span> <span class="s1">'YOUR API KEY'</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">from</span> <span class="p">:</span> <span class="s1">'thingswarner@thethings.io'</span><span class="p">,</span> <span class="c1">//this email is completly random</span>
+      <span class="na">to</span><span class="p">:</span> <span class="nx">receiver</span><span class="p">,</span>
+      <span class="na">subject</span><span class="p">:</span> <span class="s1">'Your thing has escaped!'</span><span class="p">,</span>
+      <span class="na">text</span><span class="p">:</span> <span class="s1">'Your thing has escaped from the safe zone!\n \n Last seen in: '</span><span class="o">+</span><span class="nx">coordsStr</span><span class="o">+</span><span class="s1">' \n\n Att,\n Overlord'</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
 
 <p>The example provided here shows how you can combine geolib and the geolocation of your things to send an email when your thing is not inside a predefined circle.
 In the example the description key/resource is used to store the predefined coordinates and the user&rsquo;s email. See the javascript section.</p>

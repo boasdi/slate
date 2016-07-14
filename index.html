@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO API HTTP Reference</title>
+    <title>thethings.iO API -  App Development Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -120,219 +120,285 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="introduction">Introduction</h1>
+        <h1 id="app-development">App Development</h1>
 
-<p>theThings.iO platform provides a complete backend solution for IoT Markers and IoT App Developers through an easy and flexible API. theThings.iO is hardware agnostic, that means that we don&rsquo;t force you to use a specific hardware, provided that is capable to use any of our supported protocols: HTTP, Websockets, MQTT or CoAP.</p>
+<h2 id="developing-iot-apps-with-thethings-io">Developing IoT Apps with thethings.iO</h2>
 
-<h1 id="things-http">things - HTTP</h1>
+<p>This document is a guide to understand how to create apps on top of Internet of Things using thethings.iO. It&rsquo;s recommendable to read the <a href="https://developers.thethings.io/index.html">Quickstart guide</a> first to, at least, create an account and activate a thing. </p>
 
-<h2 id="activate">Activate</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
-  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  -d <span class="s1">'{"activationCode" : "{ {activation Code} }"}'</span> <span class="se">\</span>
-  -X POST <span class="s2">"https://api.thethings.io/v2/things/"</span> -k
-</code></pre>
+<h2 id="getting-started">Getting started</h2>
 
-<blockquote>
-<p>On success the above command returns JSON structured like this:</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"created"</span>,
-  <span class="s2">"message"</span>: <span class="s2">"thing activated"</span>,
-  <span class="s2">"thingToken"</span>: <span class="s2">"NwFbEqwEQ-ucyW8aET34EWi6L&lt;em&gt;tte6fumxTSU-Pkw"</span>
-<span class="o">}</span>
-</code></pre>
+<p>Apps are intended to use the HTTP API REST to work with thethings.iO Platform.</p>
 
-<blockquote>
-<p>If you get this error, you used a wrong activation code</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"error"</span>,
-  <span class="s2">"message"</span>: <span class="s2">"activation code not found"</span>
-<span class="o">}</span>
-</code></pre>
+<h3 id="postman-collection">Postman Collection</h3>
 
-<p>Activates a thing with an activation code.</p>
+<p>You can test the following examples importing this postman collection: <a href="https://www.getpostman.com/collections/56301cc95ee8e643f9e5">thethings.iO APP Dev Postman Collection</a></p>
 
-<h3 id="http-request">HTTP Request</h3>
+<p>Get Postman: <a href="http://www.getpostman.com/">Postman REST Client</a>.</p>
 
-<p><code class="prettyprint">POST   https://api.thethings.io/v2/things/</code></p>
+<h3 id="things-and-resources">Things and Resources</h3>
 
-<h3 id="response-messages">Response Messages</h3>
+<p>The <strong>Things</strong> are the virtual representations of your Internet-connected devices.</p>
 
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-<th>Reason</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-<td></td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-<td>Invalid Input / Wrong activation code</td>
-</tr>
-</tbody></table>
+<p>We can see a <strong>Thing</strong> connected to the Internet as a <strong>collection</strong> of Resources. And each <strong>Resource</strong> can be seen as a <strong>timeline</strong>.</p>
 
-<h2 id="write">Write</h2>
+<p>The thing is going to publish or consume this resources. For example, a thing with a temperature sensor is going to publish temperature and a thing that is an on-off switch is going to consume a resource called turn which can take values on or off.</p>
+
+<p><strong>Everything can be a resource</strong>
+The value of a resource has not only to be a string or a number it can be an array, a json object or even a binary.</p>
+
+<h2 id="making-an-iot-app">Making an IoT App</h2>
+
+<p>Once you understand the concepts of Thing and Resource, you can start to analyze the requirements of your application.</p>
+
+<p>You must choose a set of resources (it is possible to edit them later) that your app will be using. The possibilities are limitless. For example, you can choose temperature and humidity. Another option would be to choose steps and calories, so the application will be compatible with all the things publishing steps and/or calories (Fitbit, nikeplus,&hellip;) connected to the platform. Or maybe an application to control the energy consumption of a home using the resource power-consumption.</p>
+
+<p>You can register an app from the <a href="https://panel.thethings.io/">Panel</a>. Once registered you will <strong>get an appID to identify your app.</strong></p>
+
+<p>At the same Panel you have to configure which resources will ask your APP for. <strong>This resources must match with the public resources defined on your product.</strong> Product resources remain private and unnaccesible by the APPs until you explicitly define them as public. You can follow the instructions at this page (Create a new IoT Product and Create a new IoT App sections): <a href="https://developers.thethings.io/iot-panel.html">Premium Panel</a>.</p>
+
+<h3 id="setup">Setup</h3>
+
+<p>The first thing you need to do is to send the username, password and appID to register the user, then log the user in so you can get a <strong>session token.</strong></p>
+
+<p>This <strong>session token</strong> is necessary to be sent in the header Authorization in every call to the platform from now on. And will let thethings.iO to identify the user and the application. This session token also contains the list of things and resources the user has authorized the app to access.</p>
+
+<h2 id="register">Register</h2>
 <pre class="highlight shell"><code>
+<span class="c"># Curl</span>
 curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
   -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  -d <span class="s1">'{ "values": [ { "key": "fun", "value": "5000" } ] }'</span> <span class="se">\</span>
-  -X POST <span class="s2">"https://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }"</span> -k
+  -d <span class="s1">'{"email": "YOUR EMAIL HERE", "password": "a hard to guess password", "app": "The appID given in the panel"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/register"</span> -k
+
 </code></pre>
 
 <blockquote>
-<p>On success, the above command returns JSON structured like this:</p>
+<p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code>
-<span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>,<span class="s2">"message"</span>:<span class="s2">"created"</span><span class="o">}</span>
-</code></pre>
-
-<blockquote>
-<p>If you get this error, remember to change YOUR_THING_TOKEN for a valid thingToken:</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>: <span class="s2">"error"</span>, <span class="s2">"message"</span>: <span class="s2">"Thing token doesn't exist"</span><span class="o">}</span>
-</code></pre>
-
-<blockquote>
-<p>Geolocation:</p>
-</blockquote>
-<pre class="highlight shell"><code>  <span class="o">{</span>
-    <span class="s2">"values"</span>:
-    <span class="o">[{</span>
-      <span class="s2">"key"</span>: <span class="s2">"my-geolocated-key"</span>,
-      <span class="s2">"value"</span> : 23,
-      <span class="s2">"geo"</span> : <span class="o">{</span>
-        <span class="s2">"lat"</span> : 41.4121132,
-        <span class="s2">"long"</span> : 2.2199454
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"token"</span>: <span class="s2">"5w3iea4uCCNPkLNkm6R6OpyOPXo"</span>,
+  <span class="s2">"expirationDate"</span>: 31536000, //seconds till token expiration
+  <span class="s2">"roles"</span>: <span class="o">{</span>
+    <span class="s2">"RSRC_description"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
       <span class="o">}</span>
-    <span class="o">}]</span>
-  <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"RSRC_temperature"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"user created"</span>
+<span class="o">}</span>
 
 </code></pre>
 
-<blockquote>
-<p>Custom timestamp:</p>
-</blockquote>
-<pre class="highlight shell"><code>
-<span class="o">{</span>
-    <span class="s2">"values"</span>:
-    <span class="o">[{</span>
-      <span class="s2">"key"</span>: <span class="s2">"my-batch-key"</span>,
-      <span class="s2">"value"</span> : 23,
-      <span class="s2">"datetime"</span> : <span class="s2">"20150520130000"</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-      <span class="s2">"key"</span>: <span class="s2">"my-batch-key"</span>,
-      <span class="s2">"value"</span> : 24,
-      <span class="s2">"datetime"</span> : <span class="s2">"20150520140000"</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-      <span class="s2">"key"</span>: <span class="s2">"my-batch-key"</span>,
-      <span class="s2">"value"</span> : 25,
-      <span class="s2">"datetime"</span> : <span class="s2">"20150520150000"</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-      <span class="s2">"key"</span>: <span class="s2">"my-batch-key"</span>,
-      <span class="s2">"value"</span> : 22,
-      <span class="s2">"datetime"</span> : <span class="s2">"20150520120000"</span>
-    <span class="o">}]</span>
-  <span class="o">}</span>
-
-</code></pre>
-
-<p>To store data, use the next endpoint.</p>
-
-<aside class="notice">
-Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got when you activated your thing. Also remove the brackets on the example.
-</aside>
-
-<aside class="notice">
-Geolocating your values:
-
-If your thing can change its location you can geolocate your values adding the geo parameter in the body. Check the code section for examples.
-</aside>
-
-<aside class="notice">
-Adding a custom timestamp:
-
-When thethings.iO receives a value, also stores the current date and time in UTC format. But sometimes your thing can&rsquo;t be able to send the values at the time the sensor reading was done (i.e. your thing doesn&rsquo;t have connectivity or you want to save battery).
-
-To solve this use cases, you can send a batch of values and indicate the time on each. The values don&rsquo;t need to be sorted by time, they will be sorted by our storage system automatically.
-
-The format is YYYYMMDDHHmmss. Notice thethings.iO considers all times to be in UTC.
-
-
-Check the code section for examples.
-</aside>
-
-<p>You can get the server time by calling:</p>
-
-<p><code class="prettyprint">GET    https://api.thethings.io/v2/utils/date?thingToken={ {THING_TOKEN} }&amp;format={ {format}}</code></p>
-
-<p>Where format can be UTC (default) or unix_timestamp</p>
+<p>Register an App user at thethings.iO Platform. This endpoint also login the user (returns the session token and roles), so you don&rsquo;t have to do another api call to login him.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST   https://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }</code></p>
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/register</code></p>
 
-<h3 id="response-messages">Response Messages</h3>
+<h2 id="login">Login</h2>
+<pre class="highlight shell"><code>url -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -d <span class="s1">'{"email": "YOUR EMAIL HERE", "password": "a hard to guess password", "app": "The appID given in the panel"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/login"</span> -k
+</code></pre>
 
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-</tr>
-</tbody></table>
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"token"</span>: <span class="s2">"5w3iea4uCCNPkLNkm6R6OpyOPXo"</span>,
+  <span class="s2">"expirationDate"</span>: 31536000, //seconds till token expiration
+  <span class="s2">"roles"</span>: <span class="o">{</span>
+    <span class="s2">"RSRC_description"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>,
+    <span class="s2">"RSRC_temperature"</span>: <span class="o">{</span>
+      <span class="s2">"OTLoG_xxxxxxxx"</span>: <span class="o">{</span>
+        <span class="s2">"get"</span>: <span class="nb">true</span>,
+        <span class="s2">"post"</span>: <span class="nb">true</span>,
+        <span class="s2">"grant"</span>: <span class="nb">true</span>,
+        <span class="s2">"put"</span>: <span class="nb">true</span>,
+        <span class="s2">"delete"</span>: <span class="nb">true</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
 
-<h2 id="read">Read</h2>
+<p>Login an App user at thethings.iO Platform. Returns the session token and roles. Roles identifies the resources and things that the user has authorized the App to access.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/login</code></p>
+
+<h2 id="activate">Activate</h2>
+
+<p>If you didn&rsquo;t activated a thing, go to the <a href="https://developers.thethings.io/index.html#step2">Quickstart guide</a>, and activate at least one.</p>
+
+<h3 id="link-thing">Link Thing</h3>
 <pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
--X GET <span class="s2">"https://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }/resources/{ {YOUR_KEY} }?limit=10"</span> -k
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"thingToken": "{ {thingToken} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things"</span> -k
 </code></pre>
 
 <blockquote>
-<p>On succes, the above command returns JSON structured like this:</p>
+<p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">[</span> <span class="o">{</span><span class="s2">"value"</span>: <span class="s2">"9000"</span>, <span class="s2">"datetime"</span>: <span class="s2">"2015-01-30T15:35:33.000Z"</span> <span class="o">}</span> <span class="o">]</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"created"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Before getting the user&rsquo;s data from a thing, it is necessary a procedure called <strong>link thing</strong> which allows the platform to know that the user is the owner of the thing.</p>
+
+<p>This procedure needs a thingToken (or the thingId) and a session token. And it requires some kind of direct communication between the app and the thing. For example, when setting up the wifi for the thing and the ssid and password are sent to the thing, it’s a good moment to ask for the thingToken of the thing. With this thingToken, the App will be able to do the REST call to link the think to the user and store the relation at the platform.
+Note that in order to link the thing the user must be logged in and the thing must be activated (i.e. have a thingToken)</p>
+
+<p>This operation can only be done for applications which have been authorized for the thing developer, this kind of apps are called official apps.</p>
+
+<p>For advanced strategies on linking things, check the &lsquo;Link Thing&rsquo; section.</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things</code></p>
+
+<h2 id="accessing-the-user-39-s-resources">Accessing the user&rsquo;s resources</h2>
+
+<p>To be able to access the user’s resources (i.e. the things data) the user must have authorized the app to see this resources.</p>
+
+<p>To check which resources has the user available we can call the GET /resources endpoint. Then if we are interested in some of his resources we can ask the user to grant the app permissions to use them. For each resource and thing, there are three types of permissions: get, post and grant. Get and post are equivalent to read and write. Grant allows the app to grant this permission to more users.</p>
+
+<p>When an app asks permissions, the platform sends a confirmation email in background to the user to check if the user is aware of this action. The user must confirm before the application can access the data. There is an exception, <strong>when the app is an official app the permissions are granted automatically.</strong></p>
+
+<h2 id="get-resources">Get resources</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources"</span> -k
+
 </code></pre>
 
 <blockquote>
-<p>If you get this error, remember to change YOUR_THING_TOKEN for a valid thingToken:</p>
+<p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>: <span class="s2">"error"</span>, <span class="s2">"message"</span>: <span class="s2">"Thing token doesn't exist"</span><span class="o">}</span>
+<pre class="highlight shell"><code><span class="c"># This result tells us that the user has the resource temperature</span>
+<span class="c"># for the thing with id "thingId1" and the thing with id "thingId2"</span>
+<span class="o">[</span>
+  <span class="o">{</span>
+    <span class="s2">"name"</span> : <span class="s2">"temperature"</span>,
+    <span class="s2">"things"</span> : <span class="o">[</span><span class="s2">"thingId1"</span>, <span class="s2">"thingId2"</span><span class="o">]</span>
+  <span class="o">}</span>,
+  <span class="o">{</span>
+    <span class="s2">"name"</span>: <span class="s2">"another resource name"</span>,
+    <span class="s2">"things"</span> : <span class="o">[</span><span class="s2">"thingId2"</span>, <span class="s2">"thingId3"</span>, ...]
+  <span class="o">}</span>,
+  ...
+<span class="o">]</span>
+
+</code></pre>
+
+<p>Get the user&rsquo;s resources and the things associated to each resource.</p>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources</code></p>
+
+<h2 id="grant">Grant</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"permissions": {"temperature":{"thingId1":{"get": true, "grant": true}}}}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/grant"</span> -k
 </code></pre>
 
 <blockquote>
-<p>If you try to read a key(resource) which you never write before, you&rsquo;ll get the next error. Remember to change YOUR_KEY for a valid key:</p>
+<p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>: <span class="s2">"error"</span>,<span class="s2">"message"</span>: <span class="s2">"resource not found"</span><span class="o">}</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'granted'</span>
+<span class="o">}</span>
+
 </code></pre>
 
-<p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.
-To read data, use the operation GET /things/ with the thing token and the key that you are using to store the values.</p>
-
-<aside class="notice">
-Remember to replace { {YOUR_KEY} } by the key that you used on the WRITE operation (&lsquo;fun&rsquo; was the key used at the example code).
-</aside>
+<p>Asks the user to grant permissions to the app, so the app can access the user&rsquo;s resources.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }/resources/{ {YOUR_KEY} }</code></p>
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/grant</code></p>
+
+<h2 id="sharing-resources">Sharing resources</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"email": "friend@email.com", permissions": {"temperature":{"thingId1":{"get": true}}}}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/grant"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'granted'</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>When a user wants to give access to his or her resources to another user, the app can use the grant endpoint. But this time the app has to pass the email of the granted user. The granter user will also receive an email to confirm this action.</p>
+
+<p>At the next example, we let the user’s friend to read the thingId1’s temperature. She won’t be able to grant this resource to anybody else as we aren’t granting her the grant permission. Also it is not possible to grant permissions that the session-token doesn’t have.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/grant</code></p>
+
+<h2 id="get-resource-values">Get resource values</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources/temperature"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"thingId1"</span> : <span class="o">[</span>
+    <span class="o">{</span><span class="s2">"value"</span>:15, <span class="s2">"datetime"</span> : <span class="s2">"20150202T220035.00Z"</span><span class="o">}</span>,
+    <span class="o">{</span><span class="s2">"value"</span>:17, <span class="s2">"datetime"</span> : <span class="s2">"20150202T210035.00Z"</span><span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>This endpoint returns the values of the specified resource.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/{ {resource} }</code></p>
 
 <h3 id="query-parameters">Query Parameters</h3>
 
@@ -364,75 +430,43 @@ Remember to replace { {YOUR_KEY} } by the key that you used on the WRITE operati
 </tr>
 </tbody></table>
 
-<h3 id="response-messages">Response Messages</h3>
+<h2 id="get-all-resource-values">Get all resource values</h2>
+<pre class="highlight shell"><code><span class="c"># curl</span>
 
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not found</td>
-</tr>
-</tbody></table>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/all_resources/{ {thingId} }"</span> -k
 
-<h2 id="readall">ReadAll</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
-  -X GET <span class="s2">"https://api.thethings.io/v2/things/{ {THING_TOKEN} }/all_resources?limit=2"</span> -k
 </code></pre>
 
 <blockquote>
-<p>On success the above command returns the following:</p>
+<p>Sample Response</p>
 </blockquote>
 <pre class="highlight shell"><code><span class="o">[</span>
     <span class="o">{</span>
-        <span class="s2">"key"</span> : <span class="s2">"foo"</span>,
-        <span class="s2">"values"</span> : <span class="o">[</span>
-            <span class="o">{</span>
-                <span class="s2">"datetime"</span> : <span class="s2">"2016-03-09T09:02:38.309Z"</span>,
-                <span class="s2">"value"</span> : 2
-            <span class="o">}</span>,
-            <span class="o">{</span>
-                <span class="s2">"datetime"</span> : <span class="s2">"2016-03-09T09:02:36.494Z"</span>,
-                <span class="s2">"value"</span> : 212
-            <span class="o">}</span>
-        <span class="o">]</span>
+        key: <span class="s1">'temperature'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 23, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
     <span class="o">}</span>,
     <span class="o">{</span>
-        <span class="s2">"key"</span> : <span class="s2">"bar"</span>,
-        <span class="s2">"values"</span> : <span class="o">[</span>
-            <span class="o">{</span>
-                <span class="s2">"datetime"</span> : <span class="s2">"2016-03-05T14:07:22.321Z"</span>,
-                <span class="s2">"value"</span> : 10
-            <span class="o">}</span>,
-            <span class="o">{</span>
-                <span class="s2">"datetime"</span> : <span class="s2">"2016-03-05T14:07:21.077Z"</span>,
-                <span class="s2">"value"</span> : 2
-            <span class="o">}</span>
-        <span class="o">]</span>
+        key: <span class="s1">'voltage'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 5, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        key: <span class="s1">'current'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: 0.32, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+        key: <span class="s1">'status'</span>,
+        values: <span class="o">[</span> <span class="o">{</span> value: <span class="s1">'ok'</span>, datetime: <span class="s1">'2016-03-16T10:29:18.772Z'</span> <span class="o">}</span> <span class="o">]</span>
     <span class="o">}</span>
 <span class="o">]</span>
 </code></pre>
 
-<p>This method returns the values of all the resources of the corresponding thing THING_TOKEN.</p>
+<p>This endpoint returns the last(s) values of all the resources.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET    https://api.thethings.io/v2/things/{ {THING_TOKEN} }/all_resources</code></p>
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/all_resources/{ {thingId} }</code></p>
 
 <h3 id="query-parameters">Query Parameters</h3>
 
@@ -464,269 +498,519 @@ Remember to replace { {YOUR_KEY} } by the key that you used on the WRITE operati
 </tr>
 </tbody></table>
 
-<h3 id="response-messages">Response Messages</h3>
+<h2 id="subscribe-to-resource-values">Subscribe to resource values</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/resources/temperature?subscribe=true&amp;keepAlive={ {time_ms} }"</span> -k
+</code></pre>
 
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not found</td>
-</tr>
-</tbody></table>
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">[</span>
+  <span class="o">{</span>
+    <span class="s2">"value"</span>:15,
+    <span class="s2">"id"</span>: <span class="s2">"thingId1"</span>
+  <span class="o">}</span>
+<span class="o">]</span>
+</code></pre>
 
-<h2 id="thing-39-s-description-todo-mejorar-explicaci-n-ponerlo-como-dos-m-todos">Thing&rsquo;s description [TODO: mejorar explicación, ponerlo como dos métodos??</h2>
+<p>Endpoint to subscribe to the real-time updates. Once subscribed, you&rsquo;ll receive a message each time that the resource receives a new value.</p>
 
-<h3 id="http-request">HTTP Request</h3>
+<p>If there are no updates the server will send {} after keepAlive ms. You should also keep a timer, and if you don’t receive updates after keepAlive time isexpired, yo have to resubscribe. This could happen if the wifi is down or something happens to the connection.</p>
 
-<p><code class="prettyprint">GET    https ://api.thethings.io/v2/things/{ {THING_TOKEN} }/resources/description</code></p>
+<p>To subscribe from a browser we recommend to use <a href="https://developers.thethings.io/app-development-websocket.html">Websocket</a>. REST API subscription is not reliable on browsers.</p>
 
-<p><code class="prettyprint">PUT    https ://api.thethings.io/v2/things/{ {THING_TOKEN} }/resources/description</code></p>
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/{ {resource} }?subscribe=true&amp;keepAlive={ {time_ms} }</code></p>
+
+<h2 id="thing-39-s-description">Thing&rsquo;s description</h2>
 
 <p>There’s a special resource called description that can contain meta-data about the thing. This meta-data could be the Thing name (chosen by the user), geocoordinates, JSON objects and any other data the developer want to put there.</p>
 
-<p>This resource is accesible the same way that all the resources. With the GET and PUT resource values.</p>
+<p>This resource is accesible the same way that all the resources. With the get and put resource values.</p>
 
-<p>Before you modify this resource, you have to get the actual description value, change the properties you want to modify and the store with a PUT the complete document again.</p>
+<p>Before you modify this resource, you have to get the actual description value, change the properties you want to modify and the store the complete document again.</p>
 
-<h2 id="subscribe">Subscribe</h2>
-<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
-  -X GET <span class="s2">"http://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }"</span> -N
-</code></pre>
+<h3 id="http-requests">HTTP Requests</h3>
 
-<blockquote>
-<p>On succes, the above command returns JSON structured like this:</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>, <span class="s2">"message"</span>:<span class="s2">"subscribed"</span><span class="o">}</span>
-</code></pre>
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/resources/description</code></p>
 
-<blockquote>
-<p>If you get this error, remember to change YOUR_THING_TOKEN for a valid thingToken.</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"error"</span>, <span class="s2">"message"</span>:<span class="s2">"Thing with thing token 'Eyixxxxxxx-xxxxxxxx' not found."</span><span class="o">}</span>
-</code></pre>
+<p><code class="prettyprint">PUT    https ://api.thethings.io/v2/me/resources/description/{ {thingId} }</code></p>
 
-<p>This method subscribes to the thing channel and gets realtime updates. You will need a compatible client. To subscribe from a browser we recommend to use Websocket. REST API subscription is not reliable on browsers.</p>
+<h2 id="user-39-s-settings">User&rsquo;s settings</h2>
 
-<p>Next method lets you subscribe to the thing channel and get real-time updates from all the thing&rsquo;s keys(ressources). The subscription endpoint creates a streaming channel and we keep the channel opened depeding on the keep alive that you send. If not keep alive is set, your router or our server will close the channel at its sole discretion.</p>
+<p>Sometimes the app needs to store additional data about the user (gender, avatar, hair color,&hellip;) in that case the app can use the endpoint &rsquo;/me/settings&rsquo; in order to set and get the user’s settings. The user’s settings are not meant to store large amounts of data. It’s more likely a small key/value store.</p>
 
-<p>To test the real-time updates, you&rsquo;ll need to open two consoles. One for the subscription curl command, and other console to do the curl writes commands.</p>
+<p>Note: If your app needs to store more complex data please look at the section Objects. Storing App data</p>
 
-<aside class="notice">
-Remember to replace { {YOUR_THING_TOKEN} } with the THING TOKEN that you got when you activated your thing. Also remove the brackets on the example.
-</aside>
-
-<h3 id="http-request">HTTP Request</h3>
-
-<p><code class="prettyprint">GET https://api.thethings.io/v2/things/{ {YOUR_THING_TOKEN} }</code></p>
-
-<h3 id="query-parameters">Query Parameters</h3>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>keepAlive</td>
-<td>60000</td>
-<td>Keep alive for keeping the channel open.</td>
-</tr>
-</tbody></table>
-
-<h3 id="response-messages">Response Messages</h3>
-
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized</td>
-</tr>
-</tbody></table>
-
-<h2 id="get-resources">Get Resources</h2>
-<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span>   -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/resources"</span> -N
+<h2 id="update-settings">Update settings</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"hair-color": "pink", "phones": ["13246578","99833212"]}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/me/settings"</span> -k
 </code></pre>
 
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
 <pre class="highlight shell"><code><span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
-  <span class="s2">"resources"</span>: <span class="o">[</span>
-    <span class="s2">"LED"</span>,
-    <span class="s2">"TAXI"</span>,
-    <span class="s2">"Yun"</span>,
-    <span class="s2">"demo_resource"</span>,
-    <span class="s2">"number"</span>,
-    <span class="s2">"random"</span>,
-    <span class="s2">"test"</span>
-  <span class="o">]</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'updated'</span>
 <span class="o">}</span>
+
 </code></pre>
 
-<p>Returns the names of the resources of the thing.</p>
+<p>Updates the settings key/value object.</p>
 
-<h3 id="http-request">HTTP Request</h3>
+<p>There’s a special key: <strong>password</strong> that will update the user’s password with the app.</p>
 
-<p><code class="prettyprint">GET https://api.thethings.io/v2/things/THING_TOKEN/resources</code></p>
+<h3 id="http-requests">HTTP Requests</h3>
 
-<h2 id="get-tags">Get Tags</h2>
-<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span>   -X GET <span class="s2">"https://api.thethings.io/v2/things/zR_I1SfhRZnAgIIQ0WkhjVxzlEVN9jei4I_2MJitSXs/tags"</span> -N
-</code></pre>
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/me/settings</code></p>
 
-<blockquote>
-<p>Sample Responses</p>
-</blockquote>
-<pre class="highlight shell"><code>
-<span class="c"># No tags defined yet</span>
-<span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
-  <span class="s2">"tags"</span>: <span class="o">[]</span>
-<span class="o">}</span>
-</code></pre>
-
-<p>Returns the tags of the thing.</p>
-
-<h3 id="http-request">HTTP Request</h3>
-
-<p><code class="prettyprint">GET https://api.thethings.io/v2/things/THING_TOKEN/tags</code></p>
-
-<h2 id="add-tag">Add tag</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>   -d <span class="s1">'{"name": "test"}'</span>   -X POST <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/tags"</span> -k
-</code></pre>
-
-<blockquote>
-<p>Request Body Sample</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>
-    <span class="s2">"name"</span>:<span class="s2">"test"</span>
-<span class="o">}</span>
+<h2 id="get-settings">Get settings</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/me/settings"</span> -k
 </code></pre>
 
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code>
-<span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
-  <span class="s2">"tags"</span>: <span class="o">[</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"hair-color"</span> : <span class="s2">"pink"</span>,
+  <span class="s2">"phones"</span> : <span class="o">[</span><span class="s2">"123456"</span>, <span class="s2">"998965"</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Retrieve the settings object.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/me/settings</code></p>
+
+<h2 id="get-server-date">Get Server Date</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/utils/date/?format=UTC"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"date"</span>: <span class="s2">"2016-03-15T14:14:09.051Z"</span>,
+  <span class="s2">"values"</span>: <span class="o">[</span>
     <span class="o">{</span>
-      <span class="s2">"_id"</span>: <span class="s2">"test"</span>,
-      <span class="s2">"name"</span>: <span class="s2">"test"</span>
+      <span class="s2">"value"</span>: <span class="s2">"2016-03-15T14:14:09.051Z"</span>
     <span class="o">}</span>
   <span class="o">]</span>
 <span class="o">}</span>
 </code></pre>
 
-<p>Add tag to a thing.</p>
+<p>Retrieve the date of the server. The param format accepts two values: &#39;UTC&rsquo; and &#39;unix_timestamp&rsquo;.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST https://api.thethings.io/v2/things/THING_TOKEN/tags</code></p>
+<p><code class="prettyprint">GET    https ://api.thethings.io/v2/utils/date/?format=UTC</code></p>
 
-<h2 id="delete-tag">Delete Tag</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>   -X DELETE <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/test"</span> -k
+<h2 id="objects-storing-app-data">Objects. Storing App data.</h2>
+
+<p>When the application needs to store objects more complex than the key-value settings it can use the endpoint <strong>/classes/</strong>
+<em>This endpoint is highly flexible storing 1 - N relationships. And with a few tricks it’s possible to represent more complex relations.</em></p>
+
+<p><em>The endpoint divide in two paths.</em> <strong>/classes/me/ and /classes/app/</strong>. The first one is only accessible by the user who stored the object. The second one allows any app user to retrieve the data. You must add the authorization header with the session token in all the calls. From now on, /me is equivalent to /app</p>
+
+<h2 id="store-an-object">Store an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"_id": "25", "name": "Dubstep"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists"</span> -k
 </code></pre>
 
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>,<span class="s2">"tags"</span>:[<span class="o">{</span><span class="s2">"_id"</span>:<span class="s2">"test-test"</span>,<span class="s2">"name"</span>:<span class="s2">"test test"</span><span class="o">}]}</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>:<span class="s2">"created"</span>,
+  <span class="s2">"id"</span>:<span class="s2">"25"</span>
+<span class="o">}</span>
 </code></pre>
 
-<p>Remove a tag from a thing. Use &#39;Get Tags&rsquo; to obtain the id of the tag you want to delete.</p>
+<p>This endpoint lets you store an object as a JSON string. If you don’t specify an _id, the system will automatically assign a random id. Returns error if the _id already exists for that collection.</p>
 
-<h3 id="http-request">HTTP Request</h3>
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/classes/me/{ {idCollection} }</code></p>
 
-<p><code class="prettyprint">DELETE https://api.thethings.io/v2/things/THING_TOKEN/tags/TAG_ID</code></p>
+<p>You can set the _id at the path, too.</p>
 
-<h2 id="last-seen">Last Seen</h2>
-<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span>   -H <span class="s2">"Content-Type: application/json"</span>    -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/lastseen"</span> -k
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="delete-an-object">Delete an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X DELETE <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
 </code></pre>
 
 <blockquote>
 <p>Sample Response</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">{</span><span class="s2">"status"</span>:<span class="s2">"success"</span>,<span class="s2">"lastseen"</span>:<span class="s2">"2016-06-22T15:10:48.647Z"</span><span class="o">}</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"deleted"</span>
+<span class="o">}</span>
 </code></pre>
 
-<p>Returns the moment of the last activity of a thing.</p>
+<p>Delete an object by _id.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">DELETE     https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="update-an-object">Update an object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"name": "Dubstep Mix", "duration": 180}'</span> <span class="se">\</span>
+  -X PUT <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  status: <span class="s1">'success'</span>,
+  message: <span class="s1">'updated'</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Change the values from an object. If there are some values which are not overwritten, this values won’t be deleted.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">PUT    https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="get-object">Get Object</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists/25"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"results"</span> : <span class="o">[</span>
+    <span class="o">{</span>
+      _id: 25,
+      <span class="s2">"name"</span>: <span class="s2">"Dubstep Mix"</span>,
+      <span class="s2">"duration"</span> : 180
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>Returns the object stored with this key.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }/{ {primaryKey} }</code></p>
+
+<h2 id="get-collection-of-objects">Get collection of objects</h2>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/classes/me/Playlists"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"results"</span> : <span class="o">[</span>
+    <span class="o">{</span>
+      _id: 25,
+      <span class="s2">"name"</span>: <span class="s2">"Dubstep Mix"</span>,
+      <span class="s2">"duration"</span> : 180
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      _id: 20,
+      <span class="s2">"name"</span>: <span class="s2">"Classic"</span>,
+      <span class="s2">"duration"</span> : 90
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>Returns all the collection&rsquo;s objects ordered by primary key descending.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }</code></p>
+
+<h2 id="subscribe-to-collection">Subscribe to collection</h2>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -X GET https://api.thethings.io/v2/classes/me/Playlists?subscribe<span class="o">=</span><span class="nb">true</span>&amp;keepAlive<span class="o">=</span>2000 -H
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="o">[</span>
+  <span class="o">{</span>
+    _id: 20,
+    <span class="s2">"name"</span>: <span class="s2">"Classic"</span>,
+    <span class="s2">"duration"</span> : 90
+  <span class="o">}</span>
+<span class="o">]</span>
+</code></pre>
+
+<p>Subscribes to collection updates. When somebody updates the collection you will be notified.</p>
+
+<p>Also note that /classes/me/:idCollection1/ is not considered to be the same collection as /classes/me/:idCollection1/:primaryKey1/:idCollection2 , so you have to subscribe both.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/classes/me/{ {idCollection} }?subscribe=true&amp;keepAlive={ {time_ms} }</code></p>
+
+<h2 id="object-relations">Object Relations</h2>
+
+<p>It is possible to add more path segments in these queries to be able to represent 1 - N binary relations, example:</p>
+
+<p><code class="prettyprint">/classes/me/Playlists/25/Songs/100/</code></p>
+
+<p>or ternary relations</p>
+
+<p><code class="prettyprint">/classes/me/Playlists/25/Songs/100/Artist/10/ ...</code></p>
+
+<p>However that routes are not equivalent to:</p>
+
+<p><code class="prettyprint">/classes/me/Songs/100/Playlist/25   or  /classes/me/Songs/100/Playlist/25/Artist/10</code></p>
+
+<p><strong>So, the ordering matters.</strong></p>
+
+<p>Note that doing:</p>
+
+<p><code class="prettyprint">POST /classes/me/:idCollection1/:primaryKey1/:idCollection2/:primaryKey2/</code></p>
+
+<p>without creating :primarykey1 will not return error and will work, but then you should remember somehow :primaryKey1</p>
+
+<h1 id="link-thing">Link Thing</h1>
+
+<h2 id="how-to-link-a-thing">How to Link a Thing</h2>
+
+<p>Before getting the user&rsquo;s data from a thing, it is necessary a procedure called <strong>link thing</strong> which allows the platform to know that the user is the owner of the thing.</p>
+
+<p>In order to link the thing the user must be logged in and the thing must be activated.</p>
+
+<p>thethings.iO provide the next options to associate a thing to an user&rsquo;s app:</p>
+
+<ul>
+<li>Link Thing with the thingToken</li>
+<li>Link Thing with a shared id from the device</li>
+</ul>
+
+<h3 id="link-thing-from-an-app-with-the-thingtoken">Link Thing from an App with the thingToken</h3>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"thingToken": "{ {thingToken} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things"</span> -k
+
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The easiest way to link a thing is when the user provides the thingToken to the app. The thingToken could be printed at the users&rsquo; manual, or printed on a card inside the packaging or received after registering the thing at your product&rsquo;s web. There are many ways to do this.</p>
+
+<p>Once the App gets the thingToken from the user, the App has to perform the next operation:</p>
 
 <h4 id="http-request">HTTP Request</h4>
 
-<p><code class="prettyprint">GET api.thethings.io/v2/things/THING_TOKEN/lastseen</code></p>
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things</code></p>
 
-<h2 id="examples">Examples</h2>
+<p>At this point the App has access to the user&rsquo;s thing data.</p>
 
-<h3 id="node-js">Node.js</h3>
+<h3 id="link-thing-with-a-shared-id-from-the-device">Link Thing with a shared id from the device</h3>
 
-<p>The next Node.js library allows to easily connect to the api.theThings.io</p>
+<blockquote>
+<p>App endpoint</p>
+</blockquote>
+<pre class="highlight shell"><code>
 
-<p>You can visit the github repository: <a href="https://github.com/theThings/thethingsio-api-node">theThings.IO API REST Node.js library</a></p>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -d <span class="s1">'{"linkId": "{ {serial} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/me/things/link-id"</span> -k
+</code></pre>
 
-<p>And get the examples at: <a href="https://github.com/theThings/thethingsio-api-node/tree/master/examples">theThings.IO API REST Node.js examples</a>)</p>
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code>
+<span class="c"># If the thing hasn't done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"waiting for thing"</span>
+<span class="o">}</span>
 
-<h3 id="arduino">Arduino</h3>
+<span class="c"># If the thing has done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
 
-<p>See the examples to connect your Arduino to thethings.iO at our GitHub Repository for <a href="https://github.com/theThings/arduino-examples">Arduino Examples</a></p>
+<blockquote>
+<p>Device Endpoint</p>
+</blockquote>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -d <span class="s1">'{"linkId": "{ {serial} }"}'</span> <span class="se">\</span>
+  -X POST <span class="s2">"https://api.thethings.io/v2/things/{ {thingToken} }/link-id"</span> -k
 
-          <h1 id="http-status-codes">HTTP Status Codes</h1>
+</code></pre>
 
-<p>Our API uses the following status codes:</p>
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># If the app hasn't done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"waiting for app"</span>
+<span class="o">}</span>
 
-<table><thead>
-<tr>
-<th>HTTP Status Code</th>
-<th>Message</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>201</td>
-<td>Created</td>
-</tr>
-<tr>
-<td>400</td>
-<td>Bad Request</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found</td>
-</tr>
-</tbody></table>
+<span class="c"># If the app has done its link api call</span>
+<span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"linked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+
+</code></pre>
+
+<p>There are some use cases where the App can&rsquo;t know about the thingToken. For this scenarios, the thing and the app has to work together to proceed to link the thing to the user&rsquo;s app.</p>
+
+<p>This is solved creating a shared serial string/number. For example, if a thing like an scale creates a Wi-Fi network, you can use the Wi-Fi SSID to provide a serial string to the app (the app can check for the Wi-Fi networks until recognizes a patron on a SSID).</p>
+
+<p>In this scenario, both, the App and the Thing can start the linking process using this shared serial and wait for the other part to complete the link process. There is a limit of 24 hours to complete the process, if not this has to be restarted.</p>
+
+<p>The App endpoint:</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/me/things/link-id</code></p>
+
+<p>The device endpoint:</p>
+
+<p><code class="prettyprint">POST   https://api.thethings.io/v2/things/{ {thingToken} }/link-id</code></p>
+
+<h2 id="how-to-unlink-a-thing-inverse-operation">How to Unlink a Thing (inverse operation)</h2>
+
+<p>If you want to remove the ownership of a thing from a user it&rsquo;s necessary a procedure called <strong>unlink thing</strong> (inverse to the previous link-thing) which allows the platform to know that the user is no longer the owner of the thing.</p>
+
+<p>In order to unlink the thing the user must be logged in and the thing must be activated and previously linked.</p>
+
+<h3 id="unlink-thing-from-an-app-with-the-thingid">Unlink thing from an App with the thingId</h3>
+<pre class="highlight shell"><code>curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Content-Type: application/json"</span> <span class="se">\</span>
+  -H <span class="s2">"Authorization: { {SESSION TOKEN} }"</span> <span class="se">\</span>
+  -X DELETE <span class="s2">"https://api.thethings.io/v2/me/things/{ { thingId } }"</span> -k
+</code></pre>
+
+<blockquote>
+<p>Sample Response</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"message"</span>: <span class="s2">"unlinked"</span>,
+  <span class="s2">"thingId"</span>: <span class="s2">"01234_567890-0abcde_fghi-jklm_nopqrs-tuvxyz"</span>
+<span class="o">}</span>
+</code></pre>
+
+<p>The thingId could be retrieved from the GET:/me/things or GET:/me/resources.</p>
+
+<h4 id="http-request">HTTP Request</h4>
+
+<p><code class="prettyprint">DELETE     https://api.thethings.io/v2/me/things</code></p>
+
+<p>At this point the App don&rsquo;t has longer access to the user&rsquo;s thing data.</p>
+
+<h1 id="websocket">WebSocket</h1>
+
+<h2 id="what-is-websocket">What is WebSocket?</h2>
+
+<p>As wikipedia says:</p>
+
+<p>&ldquo;WebSocket is a protocol providing full-duplex communications channels over a single TCP connection. WebSocket is designed to be implemented in web browsers and web servers, but it can be used by any client or server application.&rdquo;</p>
+
+<h2 id="getting-started-with-thethings-io-websocket-api">Getting started with thethings.iO WebSocket API</h2>
+
+<p>thethings.iO offers a socket.io server to be able to develop realtime browser apps. So <strong>you have to build your client with socket.io to be able to connect with our socket.io server.</strong> The REST API subscription endpoint is not reliable on browsers, so you&rsquo;ll better subscribe via Websockets.</p>
+
+<p>Our Websocket server only subscribes. To authenticate, write, etc. You have to use the REST API as explained at our APP Development Docs.</p>
+
+<p>To be able to follow this example you will need a session token. You can get the session token via register or login with the respective REST API endpoints, as commented before.</p>
+
+<p>thethings.iO Websocket server:
+<code class="prettyprint">ws.thethings.io/v2</code></p>
+
+<p><strong>In the examples, if you see something in upper case indicate variables that you may replace for the appropiate value.</strong></p>
+
+<h2 id="topics">Topics</h2>
+
+<p>You have to subscribe to a topic. Where a topic can be:</p>
+
+<ul>
+<li>An user’s resource, eg. /me/resources/{ {resource} }</li>
+<li>A thing eg. /things/THING_TOKEN . But be careful here, You don&rsquo;t want to make public your thingToken. This option is only recommended for intranets or other private pages under authentication.</li>
+</ul>
+
+<blockquote>
+<p>Example
+At this example, we show how to subscribe to the topic &rsquo;/me/resources/temperature&rsquo; , to get in real-time the values published.  </p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="c1">// First, you have to connect to thethings.iO’s websocket server ws.thethings.io , and v2 namespace</span>
+<span class="kd">var</span> <span class="nx">socket</span> <span class="o">=</span> <span class="nx">io</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span><span class="s1">'https://ws.thethings.io/v2'</span><span class="p">)</span>
+
+<span class="c1">// The next step is authenticate with the session token:</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'authenticate'</span><span class="p">,</span> <span class="p">{</span><span class="na">sessionToken</span><span class="p">:</span><span class="s2">"your session token"</span><span class="p">})</span>
+<span class="p">})</span>
+
+<span class="c1">// Once we are authenticated we can start subscribing to the things and user’s topics:</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'authenticate'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="s1">'success'</span><span class="p">){</span>
+    <span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'subscribe'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">resource</span> <span class="p">:</span> <span class="p">{</span> <span class="p">{</span><span class="nx">topic</span><span class="p">}</span> <span class="p">}</span>  <span class="c1">// topic example:  '/me/resources/temperature'</span>
+    <span class="p">})</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="c1">// The server will emit on the topic you subscribed. So to get the values use:</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">({</span> <span class="p">{</span><span class="nx">topic</span><span class="p">}</span> <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="c1">// Finally we can unsubscribe:</span>
+<span class="nx">socket</span><span class="p">.</span><span class="nx">emit</span><span class="p">(</span><span class="s1">'unsubscribe'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">resource</span> <span class="p">:</span> <span class="p">{</span> <span class="p">{</span><span class="nx">topic</span><span class="p">}</span> <span class="p">}</span>
+<span class="p">})</span>
+</code></pre>
 
       </div>
       <div class="dark-box">

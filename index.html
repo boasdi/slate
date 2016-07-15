@@ -607,6 +607,79 @@ In the example the description key/resource is used to store the predefined coor
 </ul></li>
 </ul>
 
+<h2 id="sms-and-voice-calls-with-twilio">SMS and voice calls with twilio</h2>
+
+<blockquote>
+<p>SMS</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+
+  <span class="kd">var</span> <span class="nx">telf</span> <span class="o">=</span> <span class="s1">'+01666884107'</span>
+  <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="s1">'Warning: Temperature too high'</span>
+
+  <span class="kd">var</span> <span class="nx">twilio</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twilio</span><span class="p">(</span>
+    <span class="s1">'AccountSid'</span><span class="p">,</span>
+    <span class="s1">'AuthToken'</span>
+  <span class="p">)</span>
+
+  <span class="nx">twilio</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">({</span>
+    <span class="na">to</span><span class="p">:</span> <span class="nx">telf</span><span class="p">,</span> <span class="c1">// Any number Twilio can deliver to</span>
+    <span class="na">from</span><span class="p">:</span> <span class="s1">'+01000000000'</span><span class="p">,</span> <span class="c1">// A number you bought from Twilio and can use for outbound communication</span>
+    <span class="na">body</span><span class="p">:</span> <span class="nx">message</span> <span class="c1">// body of the SMS message</span>
+  <span class="p">},</span>
+    <span class="nx">callback</span>
+  <span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+<blockquote>
+<p>Voice Call</p>
+</blockquote>
+<pre class="highlight javascript"><code>
+<span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+
+  <span class="kd">var</span> <span class="nx">telf</span> <span class="o">=</span> <span class="s1">'+01666884107'</span>
+
+  <span class="kd">var</span> <span class="nx">twilio</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twilio</span><span class="p">(</span>
+    <span class="s1">'AccountSid'</span><span class="p">,</span>
+    <span class="s1">'AuthToken'</span>
+  <span class="p">)</span>
+
+  <span class="nx">twilio</span><span class="p">.</span><span class="nx">makeCall</span><span class="p">({</span>
+    <span class="na">to</span><span class="p">:</span> <span class="nx">telf</span><span class="p">,</span> <span class="c1">// Any number Twilio can deliver to</span>
+    <span class="na">from</span><span class="p">:</span> <span class="s1">'+01000000000'</span><span class="p">,</span> <span class="c1">// A number you bought from Twilio and can use for outbound communication</span>
+    <span class="na">url</span><span class="p">:</span> <span class="nx">message</span> <span class="c1">// A URL that produces an XML document (TwiML) which contains instructions for the call</span>
+  <span class="p">},</span>
+    <span class="nx">callback</span>
+  <span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre>
+
+<h2 id="twitter">Twitter</h2>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+
+   <span class="c1">// Message to post</span>
+   <span class="kd">var</span> <span class="nx">inputTwitter</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'A 140 character message :P'</span>
+   <span class="p">}</span>
+
+   <span class="c1">// Your twitter API credentials</span>
+   <span class="kd">var</span> <span class="nx">twitter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twitter</span><span class="p">({</span>
+      <span class="na">accessToken</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+      <span class="na">accessTokenSecret</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+      <span class="na">consumerKey</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+      <span class="na">consumerSecret</span><span class="p">:</span> <span class="s1">''</span>
+   <span class="p">});</span>
+
+   <span class="nx">twitter</span><span class="p">.</span><span class="nx">postTweet</span><span class="p">(</span><span class="nx">inputTwitter</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>This service lets you send a Tweet to your Twitter account. You have to introduce your Twitter credentials. See the javascript section for an example.</p>
+
+<p>This service lets you send SMS and make voice calls. You have to introduce your twilio credentials. See the javascript section for examples.</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

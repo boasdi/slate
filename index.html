@@ -377,6 +377,23 @@ In the example the description key/resource is used to store the predefined coor
 
 <h1 id="jobs">Jobs</h1>
 
+<h2 id="jobs">Jobs</h2>
+
+<p>Jobs are tasks executed once every hour or once a day. You can use the jobs to generate your own kpis and analytics aggregating the data from the events.</p>
+
+<p>Each job must contain a <strong>function job(params, callback)</strong></p>
+
+<p>Where:</p>
+
+<ul>
+<li><p><strong>params</strong> is an empty object for now.**</p></li>
+<li><p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p></li>
+</ul>
+
+<p>The execution of a job is limited to 10 minutes. If the execution takes longer, the server will end the sandbox.</p>
+
+<p>The common use of jobs is to get the data from the events process it and send to a kpi. But any of the available services can be used at any moment.</p>
+
 <h1 id="functions">Functions</h1>
 
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>

@@ -395,6 +395,10 @@ In the example the description key/resource is used to store the predefined coor
 <p>The common use of jobs is to get the data from the events process it and send to a kpi. But any of the available services can be used at any moment.</p>
 
 <h2 id="example-average-temperature">Example: Average temperature</h2>
+
+<blockquote>
+<p>The following code takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature: </p>
+</blockquote>
 <pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
   <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
     <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
@@ -405,10 +409,6 @@ In the example the description key/resource is used to store the predefined coor
   <span class="p">})</span>
 <span class="p">}</span>
 </code></pre>
-
-<blockquote>
-<p>The following code takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature: </p>
-</blockquote>
 
 <p>The example provided here takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature.</p>
 

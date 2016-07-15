@@ -450,6 +450,17 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>The example provided here splits the data in 10 parts and gets the median of each one i.e. the values in 5%, 15%, 25%, &hellip; , 95%. </p>
 
+<h2 id="example-square-of-sum-of-squares">Example: Square of sum of squares</h2>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'myevent'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span><span class="o">*</span><span class="nx">val</span><span class="p">}).</span><span class="nx">sum</span><span class="p">())</span>
+    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'my-kpi'</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span>
+    <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
+
 <h1 id="functions">Functions</h1>
 
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>

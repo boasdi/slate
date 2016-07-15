@@ -414,7 +414,7 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>See the javascript section.</p>
 
-<h2 id="exampple-top-10-scores">Exampple: Top 10 scores</h2>
+<h2 id="example-top-10-scores">Example: Top 10 scores</h2>
 
 <blockquote>
 <p>This code sorts the data and gets the top ten values. </p>
@@ -432,6 +432,23 @@ In the example the description key/resource is used to store the predefined coor
 <p>The example provided here sorts the data and gets the top ten values. </p>
 
 <p>See the javascript section.</p>
+
+<h2 id="example-percentiles">Example: Percentiles</h2>
+
+<blockquote>
+<p>This code splits the data in 10 parts and gets the median of each one i.e. the values in 5%, 15%, 25%, &hellip; , 95%. </p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getByName</span><span class="p">(</span><span class="s1">'noise'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">noisePercentiles</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">sort</span><span class="p">().</span><span class="nx">percentiles</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'noise-percentiles'</span><span class="p">,</span><span class="nx">noisePercentiles</span><span class="p">)</span>
+    <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>The example provided here splits the data in 10 parts and gets the median of each one i.e. the values in 5%, 15%, 25%, &hellip; , 95%. </p>
 
 <h1 id="functions">Functions</h1>
 

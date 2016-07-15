@@ -386,13 +386,33 @@ In the example the description key/resource is used to store the predefined coor
 <p>Where:</p>
 
 <ul>
-<li><p><strong>params</strong> is an empty object for now.**</p></li>
+<li><p><strong>params</strong> is an empty object for now.</p></li>
 <li><p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p></li>
 </ul>
 
 <p>The execution of a job is limited to 10 minutes. If the execution takes longer, the server will end the sandbox.</p>
 
 <p>The common use of jobs is to get the data from the events process it and send to a kpi. But any of the available services can be used at any moment.</p>
+
+<h2 id="example-average-temperature">Example: Average temperature</h2>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">high0</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}).</span><span class="nx">avg</span><span class="p">()</span>
+    <span class="kd">var</span> <span class="nx">low0</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">}).</span><span class="nx">avg</span><span class="p">()</span>
+    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'avg-temperature'</span><span class="p">,{</span><span class="na">high</span><span class="p">:</span><span class="nx">high0</span><span class="p">,</span><span class="na">low</span><span class="p">:</span><span class="nx">low0</span><span class="p">})</span>
+    <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
+
+<blockquote>
+<p>The following code takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature: </p>
+</blockquote>
+
+<p>The example provided here takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature.</p>
+
+<p>See the javascript section.</p>
 
 <h1 id="functions">Functions</h1>
 

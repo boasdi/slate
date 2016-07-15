@@ -482,7 +482,11 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>There are two ways to call a function, from the API REST and from the Cloud Code (jobs and triggers).</p>
 
+<h3 id="http-request">HTTP Request</h3>
+
 <p><code class="prettyprint">POST   https://api.thethings.io/v2/things/:thingToken/code/function/FUNCTION_NAME</code></p>
+
+<p>With the parameters of the function in the body:</p>
 
 <p><code class="prettyprint">{</code></p>
 
@@ -491,8 +495,12 @@ In the example the description key/resource is used to store the predefined coor
 <p><code class="prettyprint">}</code></p>
 
 <h2 id="example-answer-to-the-ultimate-question-of-life-the-universe-and-everything-todo-poner-ejemplos-un-poco-m-s-serios">Example: Answer to the Ultimate Question of Life, the Universe, and Everything TODO: Poner ejemplos un poco más serios??</h2>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">params</span><span class="p">.</span><span class="nx">quote</span><span class="o">+</span><span class="mi">42</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
 
-<p>When you need to know any answer you can simply use this example with this params:</p>
+<p>When you need to know any answer you can simply use this example with this parameters in the body:</p>
 
 <p><code class="prettyprint">{</code></p>
 
@@ -503,6 +511,19 @@ In the example the description key/resource is used to store the predefined coor
 <p><code class="prettyprint">}</code></p>
 
 <p><code class="prettyprint">}</code></p>
+
+<p>See the javascript section.</p>
+
+<h2 id="example-generate-events">Example: Generate events</h2>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'my-event'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">params</span><span class="p">})</span>
+  <span class="nx">callback</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>You can generate events from inside the code. The following code generates a simple event which stores the value to an event called &#39;temperature&rsquo;. To be later retrieved from a job.</p>
+
+<p>See the javascript section.</p>
 
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>
 

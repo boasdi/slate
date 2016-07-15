@@ -575,6 +575,36 @@ In the example the description key/resource is used to store the predefined coor
     * DataSet: Represents the data returned from analytics.events.getByName
     * Geolib: Provide basic geospatial operations from <a href="https://github.com/manuelbieh/Geolib/">geolib</a>. Let&rsquo;s you build geofencing for example.</p>
 
+<h2 id="email">email</h2>
+
+<p>Sends an email. You have to introduce your service provider credentials.</p>
+
+<p><strong>email(credentials, options)</strong></p>
+
+<ul>
+<li>credentials: object
+
+<ul>
+<li>service: one of &#39;SendGrid&rsquo; | &#39;Mandrill&rsquo; | &#39;SES&rsquo; | &#39;Gmail&rsquo;</li>
+<li>auth: object
+
+<ul>
+<li>SendGrid: {api_user: string, api_key: string}</li>
+<li>Mandrill: {apiKey: string}</li>
+<li>SES: {accessKeyId: string, secretAccessKey: string}</li>
+<li>Gmail: {user: string, pass: string}</li>
+</ul></li>
+<li>options: object
+
+<ul>
+<li>from : string (sender email)</li>
+<li>to: string (receiver email)</li>
+<li>subject: string</li>
+<li>text: string</li>
+</ul></li>
+</ul></li>
+</ul>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

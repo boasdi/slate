@@ -515,6 +515,10 @@ In the example the description key/resource is used to store the predefined coor
 <p>See the javascript section.</p>
 
 <h2 id="example-generate-events">Example: Generate events</h2>
+
+<p>You can generate events from inside the code. The following code generates a simple event which stores the value to an event called &#39;temperature&rsquo;. To be later retrieved from a job.</p>
+
+<p>See the javascript section.</p>
 <pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
   <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'my-event'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">params</span><span class="p">})</span>
   <span class="nx">callback</span><span class="p">()</span>
@@ -529,9 +533,30 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>This function is always returning errors. See the javascript section.</p>
 
-<p>You can generate events from inside the code. The following code generates a simple event which stores the value to an event called &#39;temperature&rsquo;. To be later retrieved from a job.</p>
+<h2 id="example-some-asynchronous-stuff">Example: Some asynchronous stuff</h2>
+<pre class="highlight javascript"><code>
+<span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'test: '</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
+  <span class="c1">//you can preprocess the input(params) here</span>
 
-<p>See the javascript section.</p>
+  <span class="nx">httpRequest</span><span class="p">({</span>
+    <span class="na">host</span> <span class="p">:</span> <span class="s1">'api.citybik.es'</span><span class="p">,</span>
+    <span class="na">path</span> <span class="p">:</span> <span class="s1">'bicing.json'</span>
+  <span class="p">},</span><span class="nx">params</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">){</span>
+    <span class="c1">//and postprocess the api result here before sending to your thing</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'content-type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'application/json'</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">result</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">result</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+
+</code></pre>
+
+<p>You may be wondering why you need to call a callback instead of the classical return. With callback you can do things like we showe in this example. See the javascript section.</p>
 
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>
 

@@ -414,6 +414,25 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>See the javascript section.</p>
 
+<h2 id="exampple-top-10-scores">Exampple: Top 10 scores</h2>
+
+<blockquote>
+<p>This code sorts the data and gets the top ten values. </p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
+  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'score'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">top10</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">){</span><span class="k">return</span> <span class="nx">b</span><span class="o">-</span><span class="nx">a</span><span class="p">}).</span><span class="nx">take</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span><span class="nx">collect</span><span class="p">()</span>
+    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'top-10'</span><span class="p">,</span> <span class="nx">top10</span><span class="p">)</span>
+    <span class="nx">callback</span><span class="p">()</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>The example provided here sorts the data and gets the top ten values. </p>
+
+<p>See the javascript section.</p>
+
 <h1 id="functions">Functions</h1>
 
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>

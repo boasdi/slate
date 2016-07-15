@@ -463,6 +463,21 @@ In the example the description key/resource is used to store the predefined coor
 
 <h1 id="functions">Functions</h1>
 
+<h2 id="functions">Functions</h2>
+
+<p>Functions are snipets of code executed when an API REST endpoint is called. They can also be called from other parts of the cloud code like triggers and jobs. They are useful to encapsulate business logic that you don&rsquo;t want into the devices.</p>
+
+<p>Each function must contain a <strong>function main(params, callback)</strong></p>
+
+<p>Where:</p>
+
+<ul>
+<li><p><strong>params</strong> is the input of the function which can be a string, object, array,&hellip;</p></li>
+<li><p><strong>callback(error, result)</strong> is a function to be called when the function ends. Can contain a parameter string error if the funciton needs to report an error. If the error is null it can contain a result which will be returned as a response.</p></li>
+</ul>
+
+<p>The execution of a function is <strong>limited to 20 seconds.</strong> If the execution takes longer, the server will end the sandbox. Note that if the function is called inside a trigger the execution time will be the 2 seconds of a trigger.</p>
+
 <h1 id="exposed-apis-ref">Exposed APIs Ref</h1>
 
       </div>

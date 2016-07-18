@@ -121,860 +121,99 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id="basics">Basics</h1>
+        <h1 id="introduction">Introduction</h1>
 
-<h2 id="cloud-code-sandbox">Cloud Code Sandbox</h2>
+<p>thethings.iO offer over-the-air (OTA) firmware upgrade support to products manufacturers with minimal coding.</p>
 
-<p>Sometimes you need to execute a part of your bussiness logic in a server. You can execute JavaScript code at thethings.iO cloud using the Cloud Code API.</p>
+<p>It permits you to distribute your firmware over Wi-Fi or mobile broadband using our API without requiring the user to connect the device to a computer via USB to perform the update, because firmware updates are available for download from the thethings.iO OTA service.</p>
 
-<p>There are three types of Cloud Code: triggers, jobs and functions.</p>
+<h1 id="firmware-manager-todo-imagenes">Firmware manager TODO: IMAGENES???</h1>
 
-<ul>
-<li>   Triggers are executed when an event occurs like a thingWrite.</li>
-<li>   Jobs are tasks executed once every hour or day.</li>
-<li>   Functions are snippets of code executed with a REST API call.</li>
-</ul>
+<p>Firmware manager permits you to manage and publish your firmwares upgrades for your thing model and microcontroller unit (MCU) through the panel. The following features will be available:</p>
 
-<p>You can use triggers to send alarms when the temperature is higher than a treshold or generate events to aggregate later in a job.</p>
+<ol>
+<li>Create and upload new firmware versions</li>
+<li>List all available versions</li>
+<li>Delete firmware versions</li>
+</ol>
 
-<h3 id="product-trigger-example-todo-imagenes-cambiar-redacci-n-de-texto-seg-n-esto">Product Trigger Example TODO: imagenes? cambiar redacción de texto según esto</h3>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'trigger triggered!!'</span><span class="p">)</span>
-  <span class="c1">//igrnore non wirte events</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="s1">'write'</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
+<h1 id="api-reference">API reference</h1>
 
-  <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">values</span>
-  <span class="kd">var</span> <span class="nx">thingToken</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span>
+<h2 id="get-latest-firmware-version">Get latest firmware version:</h2>
 
-  <span class="c1">//iterate over the values of the write</span>
-  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">'temperature'</span> <span class="o">&amp;&amp;</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">){</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'omg too hot'</span><span class="p">)</span>
-      <span class="nx">email</span><span class="p">(</span>
-        <span class="p">{</span>
-          <span class="na">service</span> <span class="p">:</span> <span class="s1">'SendGrid'</span><span class="p">,</span>
-          <span class="na">auth</span><span class="p">:</span> <span class="p">{</span>
-            <span class="na">api_user</span><span class="p">:</span> <span class="s1">'YOUR API USER'</span><span class="p">,</span>
-            <span class="na">api_key</span><span class="p">:</span> <span class="s1">'YOUR API KEY'</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="na">from</span><span class="p">:</span> <span class="s1">'your@email.com'</span><span class="p">,</span>
-          <span class="na">to</span><span class="p">:</span> <span class="s1">'to@receiver.com'</span><span class="p">,</span>
-          <span class="na">subject</span> <span class="p">:</span> <span class="s1">'The temperature is too high'</span><span class="p">,</span>
-          <span class="na">text</span> <span class="p">:</span> <span class="s1">'Master, it’s too hot here! \n\n Always yours,\n '</span><span class="o">+</span> <span class="nx">thingToken</span>
-        <span class="p">}</span>
-      <span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="c1">//end the trigger</span>
-  <span class="nx">callback</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>This is a description of how you can set and manage a trigger for a product.</p>
-
-<p>First, go to the Cloud code view clicking on the &lsquo;Cloud code&rsquo; link at the left sidebar.</p>
-
-<p>As you can see, this view is empty because you haven&rsquo;t created a trigger. Later, you will manage your triggers (list, delete and edit) from this view.</p>
-
-<p>Now, just click at the &#39;Add Trigger&rsquo; button and you&rsquo;ll see the next form:</p>
-
-<p>This form is very straight forward, you only have to name the trigger, choose the product which you want to apply the trigger, put the code and save.</p>
-
-<p>Once added, the trigger will subscribe to all the devices of a product. That means that every time an event on your devices occurs, we execute the trigger code.</p>
-
-<p>For example (next code example), if a device writes a temperature value of 25, the trigger is triggered and will get this value via the params argument. If our trigger is configured to send an email every time a value is up to 50, the code will compare 25 and 50, and will do nothing. But if the device writes a 60, then the trigger will send an email alerting us.</p>
-
-<h3 id="javascript-exposed-methods">Javascript exposed methods</h3>
-
-<p>The provided Cloud code sandbox only exposes some basic methods:</p>
-
-<ul>
-<li>&#39;setTimeout&rsquo;,</li>
-<li>  &#39;setInterval&rsquo;,</li>
-<li>   &#39;clearTimeout&rsquo;,</li>
-<li>   &#39;clearInterval&rsquo;</li>
-</ul>
-
-<p>And the exposed services described at our documentation: Exposed APIs</p>
-
-<h1 id="triggers">Triggers</h1>
-
-<h2 id="triggers">Triggers</h2>
-
-<p>Triggers are snippets of code executed after an event happens like a thingWrite. You can use a trigger to send an alarm or generate an event to be aggregated later. Also you can call external web services.</p>
-
-<p>Each trigger must contain a <strong>function trigger(params, callback)</strong></p>
-
-<p>Where:</p>
-
-<p><strong>params</strong> is an object with the keys:</p>
-
-<ul>
-<li>   action: one of &#39;write&rsquo; | &#39;read&rsquo;</li>
-<li>   thingToken: the thing that triggered the trigger</li>
-<li>   values: only if action == &#39;write&rsquo;. Is an array of values where each value is an object with:
-
-<ul>
-<li>key: the key</li>
-<li>value: the data sent</li>
-<li>datetime: (can be null)</li>
-</ul></li>
-</ul>
-
-<p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p>
-
-<p>The execution of a trigger is <strong>limited to 2 seconds.</strong> If the execution takes longer, the server will end the sandbox.</p>
-
-<h2 id="setup-alarm">Setup Alarm</h2>
+<p>Query for the latest firmware informations for the model of the thing corresponding to the specified THINGTOKEN.
+It will return all latest firmware registred for every micro-controller (MCU).</p>
 
 <blockquote>
-<p>This code sends an email when the temperature is higher than 50 degrees to &#39;to@receiver.com&rsquo;. </p>
+<p>HTTP REST API</p>
 </blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'trigger triggered!!'</span><span class="p">)</span>
-  <span class="c1">//ignore non write events</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="s1">'write'</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-
-  <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">values</span>
-  <span class="kd">var</span> <span class="nx">thingToken</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span>
-
-  <span class="c1">//iterate over the values of the write</span>
-  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">'temperature'</span> <span class="o">&amp;&amp;</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span> <span class="o">&gt;=</span> <span class="mi">50</span><span class="p">){</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'omg too hot'</span><span class="p">)</span>
-      <span class="nx">email</span><span class="p">(</span>
-        <span class="p">{</span>
-          <span class="na">service</span> <span class="p">:</span> <span class="s1">'SendGrid'</span><span class="p">,</span>
-          <span class="na">auth</span><span class="p">:</span> <span class="p">{</span>
-            <span class="na">api_user</span><span class="p">:</span> <span class="s1">'YOUR API USER'</span><span class="p">,</span>
-            <span class="na">api_key</span><span class="p">:</span> <span class="s1">'YOUR API KEY'</span>
-          <span class="p">}</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-          <span class="na">from</span><span class="p">:</span> <span class="s1">'your@email.com'</span><span class="p">,</span>
-          <span class="na">to</span><span class="p">:</span> <span class="s1">'to@receiver.com'</span><span class="p">,</span>
-          <span class="na">subject</span> <span class="p">:</span> <span class="s1">'The temperature is too high'</span><span class="p">,</span>
-          <span class="na">text</span> <span class="p">:</span> <span class="s1">'Master, it’s too hot here! \n\n Always yours,\n '</span><span class="o">+</span> <span class="nx">thingToken</span>
-        <span class="p">}</span>
-      <span class="p">)</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="c1">//end the trigger</span>
-  <span class="nx">callback</span><span class="p">()</span>
-<span class="p">}</span>
+<pre class="highlight shell"><code><span class="c"># HTTP API example via cURL</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/firmwares/latest"</span> -k
 </code></pre>
-
-<p>The example code provided here sends an email when the temperature is higher than 50 degrees to &#39;to@receiver.com&rsquo;. See the javascript section.</p>
-
-<h2 id="generate-events">Generate events</h2>
 
 <blockquote>
-<p>The following code generates a simple event which stores the value to an event called &#39;temperature&rsquo;. </p>
+<p>CoAP REST API</p>
 </blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'trigger triggered!!'</span><span class="p">)</span>
-  <span class="c1">//igrnore non wirte events</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="s1">'write'</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-  <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">values</span>
-  <span class="c1">//iterate over the values of the write</span>
-  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">){</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">value</span><span class="p">})</span>
-  <span class="p">}</span>
-  <span class="c1">//end the trigger</span>
-  <span class="nx">callback</span><span class="p">()</span>
-<span class="p">}</span>
+<pre class="highlight shell"><code><span class="c"># CoAP API example via coap-cli</span>
+coap get coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/latest
 </code></pre>
-
-<p>You can generate events from inside the code. The example provided here generates a simple event which stores the value to an event called &#39;temperature&rsquo;. To be later retrieved from a*<em>job</em>*. See the javascript section.</p>
-
-<h2 id="playing-with-geolocation">Playing with geolocation</h2>
 
 <blockquote>
-<p>This code shows how you can combine geolib and the geolocation of your things to send an email when your thing is not inside a predefined circle.</p>
+<p>MQT RPC API</p>
 </blockquote>
-<pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">MAX_DISTANCE</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
-
-<span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="c1">//ignore non write events</span>
-  <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">action</span> <span class="o">!==</span> <span class="s1">'write'</span><span class="p">){</span>
-   <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">}</span>
-  <span class="kd">var</span> <span class="nx">position</span> <span class="o">=</span> <span class="kc">null</span>
-  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">){</span>
-   <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">key</span> <span class="o">===</span> <span class="s1">'location'</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">geo</span><span class="p">){</span>
-     <span class="nx">position</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">geo</span>
-    <span class="p">}</span>
-   <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="c1">//also we ignore the keys that are not location and don't have geolocation</span>
-  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">position</span><span class="p">){</span>
-   <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">}</span>
-  <span class="c1">//get the thing description resource</span>
-  <span class="nx">httpRequest</span><span class="p">({</span>
-    <span class="na">host</span><span class="p">:</span> <span class="s1">'api.thethings.io'</span><span class="p">,</span>
-    <span class="na">path</span><span class="p">:</span> <span class="s1">'/v2/things/'</span><span class="o">+</span><span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span><span class="o">+</span><span class="s1">'/resources/description'</span>
-  <span class="p">},</span><span class="nx">response</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">position</span><span class="p">))</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">response</span><span class="p">(</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">position</span><span class="p">){</span>
- <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">){</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
-      <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-     <span class="nx">data</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
-     <span class="c1">//ensure that the description is defined with coordinates</span>
-     <span class="k">if</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">||</span> <span class="o">!</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span><span class="p">){</span>
-         <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'description not defined with coordinates'</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nx">callback</span><span class="p">()</span>
-     <span class="p">}</span>
-     <span class="kd">var</span> <span class="nx">coordinates</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">coordinates</span>
-     <span class="c1">//check if the position is inside the circle</span>
-     <span class="kd">var</span> <span class="nx">inside</span> <span class="o">=</span> <span class="nx">geolib</span><span class="p">.</span><span class="nx">isPointInCircle</span><span class="p">(</span>
-        <span class="p">{</span><span class="na">latitude</span><span class="p">:</span> <span class="nx">position</span><span class="p">.</span><span class="nx">lat</span><span class="p">,</span> <span class="na">longitude</span><span class="p">:</span> <span class="nx">position</span><span class="p">.</span><span class="kr">long</span><span class="p">},</span>
-        <span class="p">{</span><span class="na">latitude</span><span class="p">:</span> <span class="nx">coordinates</span><span class="p">.</span><span class="nx">lat</span><span class="p">,</span> <span class="na">longitude</span><span class="p">:</span> <span class="nx">coordinates</span><span class="p">.</span><span class="kr">long</span><span class="p">},</span>
-        <span class="nx">MAX_DISTANCE</span>
-    <span class="p">);</span>
-     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'inside'</span><span class="p">,</span> <span class="nx">inside</span><span class="p">,</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">)</span>
-     <span class="c1">//generate an analytics event to get data insigts later</span>
-     <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'inside'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">inside</span><span class="p">})</span>
-     <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">inside</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">){</span>
-       <span class="c1">//if the email is defined send a warning email</span>
-      <span class="nx">sendWarningEmail</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">.</span><span class="nx">email</span><span class="p">,</span><span class="nx">position</span><span class="p">)</span>
-     <span class="p">}</span>
-     <span class="nx">callback</span><span class="p">()</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="c1">//this function geneartes and sends a cool warning email</span>
-<span class="kd">function</span> <span class="nx">sendWarningEmail</span><span class="p">(</span><span class="nx">receiver</span><span class="p">,</span> <span class="nx">coords</span><span class="p">){</span>
-  <span class="kd">var</span> <span class="nx">coordsStr</span> <span class="o">=</span> <span class="s1">'&lt;a href="https://www.google.com/maps/dir//'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">'/@'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">',15z"&gt;https://www.google.com/maps/dir//'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">'/@'</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="nx">lat</span><span class="o">+</span><span class="s1">','</span><span class="o">+</span><span class="nx">coords</span><span class="p">.</span><span class="kr">long</span><span class="o">+</span><span class="s1">',15z&lt;/a&gt;'</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'sending email to'</span><span class="p">,</span> <span class="nx">receiver</span><span class="p">)</span>
-  <span class="nx">email</span><span class="p">(</span>
-    <span class="p">{</span>
-      <span class="na">service</span><span class="p">:</span> <span class="s1">'SendGrid'</span><span class="p">,</span>
-      <span class="na">auth</span><span class="p">:</span> <span class="p">{</span>
-        <span class="na">api_user</span><span class="p">:</span> <span class="s1">'YOUR API USER'</span><span class="p">,</span>
-        <span class="na">api_key</span><span class="p">:</span> <span class="s1">'YOUR API KEY'</span>
-      <span class="p">}</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="na">from</span> <span class="p">:</span> <span class="s1">'thingswarner@thethings.io'</span><span class="p">,</span> <span class="c1">//this email is completly random</span>
-      <span class="na">to</span><span class="p">:</span> <span class="nx">receiver</span><span class="p">,</span>
-      <span class="na">subject</span><span class="p">:</span> <span class="s1">'Your thing has escaped!'</span><span class="p">,</span>
-      <span class="na">text</span><span class="p">:</span> <span class="s1">'Your thing has escaped from the safe zone!\n \n Last seen in: '</span><span class="o">+</span><span class="nx">coordsStr</span><span class="o">+</span><span class="s1">' \n\n Att,\n Overlord'</span>
-  <span class="p">})</span>
-<span class="p">}</span>
+<pre class="highlight shell"><code><span class="c"># Subscribe for the response</span>
+mosquitto_sub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/THING_TOKEN/firmwares/latest/response"</span> -d
+<span class="c"># Publish request</span>
+mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/THING_TOKEN/firmwares/latest/request"</span> -m <span class="s1">'{"_requestId":"[randomId]"}'</span> -d
 </code></pre>
-
-<p>The example provided here shows how you can combine geolib and the geolocation of your things to send an email when your thing is not inside a predefined circle.
-In the example the description key/resource is used to store the predefined coordinates and the user&rsquo;s email. See the javascript section.</p>
-
-<h1 id="jobs">Jobs</h1>
-
-<h2 id="jobs">Jobs</h2>
-
-<p>Jobs are tasks executed once every hour or once a day. You can use the jobs to generate your own kpis and analytics aggregating the data from the events.</p>
-
-<p>Each job must contain a <strong>function job(params, callback)</strong></p>
-
-<p>Where:</p>
-
-<ul>
-<li><p><strong>params</strong> is an empty object for now.</p></li>
-<li><p><strong>callback</strong> is a function to be called when the trigger ends can contain a parameter string error if the trigger needs to report an error.</p></li>
-</ul>
-
-<p>The execution of a job is limited to 10 minutes. If the execution takes longer, the server will end the sandbox.</p>
-
-<p>The common use of jobs is to get the data from the events process it and send to a kpi. But any of the available services can be used at any moment.</p>
-
-<h2 id="example-average-temperature">Example: Average temperature</h2>
 
 <blockquote>
-<p>The following code takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature: </p>
+<p>Sample Response</p>
 </blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'temperature'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
-    <span class="kd">var</span> <span class="nx">high0</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}).</span><span class="nx">avg</span><span class="p">()</span>
-    <span class="kd">var</span> <span class="nx">low0</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">}).</span><span class="nx">avg</span><span class="p">()</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'avg-temperature'</span><span class="p">,{</span><span class="na">high</span><span class="p">:</span><span class="nx">high0</span><span class="p">,</span><span class="na">low</span><span class="p">:</span><span class="nx">low0</span><span class="p">})</span>
-    <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">})</span>
-<span class="p">}</span>
+<pre class="highlight shell"><code><span class="o">{</span>
+  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
+  <span class="s2">"firmwares"</span>: <span class="o">[</span>
+    <span class="o">{</span> productId: 1234,
+      version: <span class="s1">'1.0.1'</span>,
+      notes: <span class="s1">'Wifi firmware changelog'</span>,
+      _id: <span class="s1">'56c5a331665c14fa09612f38'</span>,
+      createdAt: <span class="s1">'2016-02-18T10:55:45.517Z'</span>,
+      file:
+       <span class="o">{</span> id: <span class="s1">'56c5a331665c14fa09612f35'</span>,
+         md5: <span class="s1">'0ad066a5d29f3f2a2a1c7c17dd082a79'</span>,
+         <span class="nb">type</span>: <span class="s1">'gfs'</span>,
+         url: <span class="s1">'https ://api.thethings.io/v2/models/125/firmwares/download/ey...oeZPc1raYnhDe7mLo'</span> <span class="o">}</span>,
+      targetMCU: <span class="s1">'WiFi'</span>
+    <span class="o">}</span>,
+    <span class="o">{</span> productId: 1234,
+      version: <span class="s1">'1.0.2'</span>,
+      notes: <span class="s1">'Main board firmware changelog'</span>,
+      _id: <span class="s1">'56c5a331665c14fa09612f39'</span>,
+      createdAt: <span class="s1">'2016-02-18T10:55:45.519Z'</span>,
+      file:
+       <span class="o">{</span> id: <span class="s1">'56c5a331665c14fa09612f34'</span>,
+         md5: <span class="s1">'0ad066a5d29f3f2a2a1c7c17dd082a79'</span>,
+         <span class="nb">type</span>: <span class="s1">'gfs'</span>,
+         url: <span class="s1">'https ://api.thethings.io/v2/models/125/firmwares/download/ey...ljMAXtn3snvSz0dT1Rw'</span> <span class="o">}</span>,
+      targetMCU: <span class="s1">'Main'</span>
+    <span class="o">}</span> <span class="o">]</span>
+<span class="o">}</span>
 </code></pre>
-
-<p>The example provided here takes all events with the type temperature and separates them in two groups, with temperature higher than 0 an lower than 0. Then computes the average and stores to a kpi called avg-temperature.</p>
-
-<p>See the javascript section.</p>
-
-<h2 id="example-top-10-scores">Example: Top 10 scores</h2>
-
-<blockquote>
-<p>This code sorts the data and gets the top ten values. </p>
-</blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'score'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
-    <span class="kd">var</span> <span class="nx">top10</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">){</span><span class="k">return</span> <span class="nx">b</span><span class="o">-</span><span class="nx">a</span><span class="p">}).</span><span class="nx">take</span><span class="p">(</span><span class="mi">10</span><span class="p">).</span><span class="nx">collect</span><span class="p">()</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'top-10'</span><span class="p">,</span> <span class="nx">top10</span><span class="p">)</span>
-    <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">})</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>The example provided here sorts the data and gets the top ten values. </p>
-
-<p>See the javascript section.</p>
-
-<h2 id="example-percentiles">Example: Percentiles</h2>
-
-<blockquote>
-<p>This code splits the data in 10 parts and gets the median of each one i.e. the values in 5%, 15%, 25%, &hellip; , 95%. </p>
-</blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getByName</span><span class="p">(</span><span class="s1">'noise'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
-    <span class="kd">var</span> <span class="nx">noisePercentiles</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">sort</span><span class="p">().</span><span class="nx">percentiles</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'noise-percentiles'</span><span class="p">,</span><span class="nx">noisePercentiles</span><span class="p">)</span>
-    <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">})</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>The example provided here splits the data in 10 parts and gets the median of each one i.e. the values in 5%, 15%, 25%, &hellip; , 95%. </p>
-
-<h2 id="example-square-of-sum-of-squares">Example: Square of sum of squares</h2>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">job</span><span class="p">(</span><span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">getValuesByName</span><span class="p">(</span><span class="s1">'myevent'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">data</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span>
-    <span class="kd">var</span> <span class="nx">res</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span><span class="k">return</span> <span class="nx">val</span><span class="o">*</span><span class="nx">val</span><span class="p">}).</span><span class="nx">sum</span><span class="p">())</span>
-    <span class="nx">analytics</span><span class="p">.</span><span class="nx">kpis</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="s1">'my-kpi'</span><span class="p">,</span><span class="nx">res</span><span class="p">)</span>
-    <span class="nx">callback</span><span class="p">()</span>
-  <span class="p">})</span>
-<span class="p">}</span>
-</code></pre>
-
-<h1 id="functions">Functions</h1>
-
-<h2 id="functions">Functions</h2>
-
-<p>Functions are snipets of code executed when an API REST endpoint is called. They can also be called from other parts of the cloud code like triggers and jobs. They are useful to encapsulate business logic that you don&rsquo;t want into the devices.</p>
-
-<p>Each function must contain a <strong>function main(params, callback)</strong></p>
-
-<p>Where:</p>
-
-<ul>
-<li><p><strong>params</strong> is the input of the function which can be a string, object, array,&hellip;</p></li>
-<li><p><strong>callback(error, result)</strong> is a function to be called when the function ends. Can contain a parameter string error if the funciton needs to report an error. If the error is null it can contain a result which will be returned as a response.</p></li>
-</ul>
-
-<p>The execution of a function is <strong>limited to 20 seconds.</strong> If the execution takes longer, the server will end the sandbox. Note that if the function is called inside a trigger the execution time will be the 2 seconds of a trigger.</p>
-
-<h2 id="calling-a-function-todo-add-command-line-example">Calling a function TODO: add command line example</h2>
-
-<p>There are two ways to call a function, from the API REST and from the Cloud Code (jobs and triggers).</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST   https://api.thethings.io/v2/things/:thingToken/code/function/FUNCTION_NAME</code></p>
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/things/THING_TOKEN/firmwares/latest</code></p>
 
-<p>With the parameters of the function in the body:</p>
+<h3 id="coap-request">CoAP Request</h3>
 
-<p><code class="prettyprint">{</code></p>
+<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/latest</code></p>
 
-<p><code class="prettyprint">&quot;params&quot;:   THE FUNCTION INPUT GOES HERE</code></p>
+<h3 id="mqtt">MQTT</h3>
 
-<p><code class="prettyprint">}</code></p>
+<p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN/firmwares/latest/response</code></p>
 
-<h2 id="example-answer-to-the-ultimate-question-of-life-the-universe-and-everything-todo-poner-ejemplos-un-poco-m-s-serios">Example: Answer to the Ultimate Question of Life, the Universe, and Everything TODO: Poner ejemplos un poco más serios??</h2>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">params</span><span class="p">.</span><span class="nx">quote</span><span class="o">+</span><span class="mi">42</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>When you need to know any answer you can simply use this example with this parameters in the body:</p>
-
-<p><code class="prettyprint">{</code></p>
-
-<p><code class="prettyprint">params: {</code></p>
-
-<p><code class="prettyprint">&quot;quote&quot;: &quot;the answer to life the universe and everything is &quot;</code></p>
-
-<p><code class="prettyprint">}</code></p>
-
-<p><code class="prettyprint">}</code></p>
-
-<p>See the javascript section.</p>
-
-<h2 id="example-generate-events">Example: Generate events</h2>
-
-<p>You can generate events from inside the code. The following code generates a simple event which stores the value to an event called &#39;temperature&rsquo;. To be later retrieved from a job.</p>
-
-<p>See the javascript section.</p>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">analytics</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">create</span><span class="p">({</span><span class="na">name</span><span class="p">:</span><span class="s1">'my-event'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span><span class="nx">params</span><span class="p">})</span>
-  <span class="nx">callback</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre>
-
-<h2 id="example-the-always-errored-function">Example: The always errored function</h2>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">callback</span><span class="p">(</span><span class="s2">"I'm in bad mood"</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>This function is always returning errors. See the javascript section.</p>
-
-<h2 id="example-some-asynchronous-stuff">Example: Some asynchronous stuff</h2>
-<pre class="highlight javascript"><code>
-<span class="kd">function</span> <span class="nx">main</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'test: '</span><span class="p">,</span> <span class="nx">params</span><span class="p">)</span>
-  <span class="c1">//you can preprocess the input(params) here</span>
-
-  <span class="nx">httpRequest</span><span class="p">({</span>
-    <span class="na">host</span> <span class="p">:</span> <span class="s1">'api.citybik.es'</span><span class="p">,</span>
-    <span class="na">path</span> <span class="p">:</span> <span class="s1">'bicing.json'</span>
-  <span class="p">},</span><span class="nx">params</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">){</span>
-    <span class="c1">//and postprocess the api result here before sending to your thing</span>
-    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s1">'content-type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'application/json'</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">result</span><span class="p">.</span><span class="nx">result</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">result</span><span class="p">)</span>
-    <span class="p">}</span>
-
-    <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span>
-  <span class="p">})</span>
-<span class="p">}</span>
-
-</code></pre>
-
-<p>You may be wondering why you need to call a callback instead of the classical return. With callback you can do things like we showe in this example. See the javascript section.</p>
-
-<h1 id="exposed-apis-ref">Exposed APIs Ref</h1>
-
-<h2 id="exposed-services-reference">Exposed services reference</h2>
-
-<p>This document describes how to interact with the exposed external services in the cloud code.</p>
-
-<ul>
-<li>email: Sends an email.</li>
-<li>twilio: Voice and SMS.</li>
-<li>Twitter: Send a Tweet.</li>
-<li>httpRequest: Sends an http request</li>
-<li>console: Logs in your code</li>
-<li>analytics.events: Allows to create and retrieve events</li>
-<li>analytics.kpis: Allows to create kpis</li>
-<li>thethingsAPI: Allows to Read and Write on a device resource</li>
-<li>DataSet: Represents the data returned from analytics.events.getByName</li>
-<li>Geolib: Provide basic geospatial operations from <a href="https://github.com/manuelbieh/Geolib/">geolib</a>. Let&rsquo;s you build geofencing for example.</li>
-</ul>
-
-<h2 id="email">email</h2>
-
-<p>Sends an email. You have to introduce your service provider credentials.</p>
-
-<p><strong>email(credentials, options)</strong></p>
-
-<ul>
-<li>credentials: object
-
-<ul>
-<li>service: one of &#39;SendGrid&rsquo; | &#39;Mandrill&rsquo; | &#39;SES&rsquo; | &#39;Gmail&rsquo;</li>
-<li>auth: object
-
-<ul>
-<li>SendGrid: {api_user: string, api_key: string}</li>
-<li>Mandrill: {apiKey: string}</li>
-<li>SES: {accessKeyId: string, secretAccessKey: string}</li>
-<li>Gmail: {user: string, pass: string}</li>
-</ul></li>
-<li>options: object
-
-<ul>
-<li>from : string (sender email)</li>
-<li>to: string (receiver email)</li>
-<li>subject: string</li>
-<li>text: string</li>
-</ul></li>
-</ul></li>
-</ul>
-
-<h2 id="sms-and-voice-calls-with-twilio">SMS and voice calls with twilio</h2>
-
-<blockquote>
-<p>SMS</p>
-</blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-
-  <span class="kd">var</span> <span class="nx">telf</span> <span class="o">=</span> <span class="s1">'+01666884107'</span>
-  <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="s1">'Warning: Temperature too high'</span>
-
-  <span class="kd">var</span> <span class="nx">twilio</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twilio</span><span class="p">(</span>
-    <span class="s1">'AccountSid'</span><span class="p">,</span>
-    <span class="s1">'AuthToken'</span>
-  <span class="p">)</span>
-
-  <span class="nx">twilio</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">({</span>
-    <span class="na">to</span><span class="p">:</span> <span class="nx">telf</span><span class="p">,</span> <span class="c1">// Any number Twilio can deliver to</span>
-    <span class="na">from</span><span class="p">:</span> <span class="s1">'+01000000000'</span><span class="p">,</span> <span class="c1">// A number you bought from Twilio and can use for outbound communication</span>
-    <span class="na">body</span><span class="p">:</span> <span class="nx">message</span> <span class="c1">// body of the SMS message</span>
-  <span class="p">},</span>
-    <span class="nx">callback</span>
-  <span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-
-<blockquote>
-<p>Voice Call</p>
-</blockquote>
-<pre class="highlight javascript"><code>
-<span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-
-  <span class="kd">var</span> <span class="nx">telf</span> <span class="o">=</span> <span class="s1">'+01666884107'</span>
-
-  <span class="kd">var</span> <span class="nx">twilio</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twilio</span><span class="p">(</span>
-    <span class="s1">'AccountSid'</span><span class="p">,</span>
-    <span class="s1">'AuthToken'</span>
-  <span class="p">)</span>
-
-  <span class="nx">twilio</span><span class="p">.</span><span class="nx">makeCall</span><span class="p">({</span>
-    <span class="na">to</span><span class="p">:</span> <span class="nx">telf</span><span class="p">,</span> <span class="c1">// Any number Twilio can deliver to</span>
-    <span class="na">from</span><span class="p">:</span> <span class="s1">'+01000000000'</span><span class="p">,</span> <span class="c1">// A number you bought from Twilio and can use for outbound communication</span>
-    <span class="na">url</span><span class="p">:</span> <span class="nx">message</span> <span class="c1">// A URL that produces an XML document (TwiML) which contains instructions for the call</span>
-  <span class="p">},</span>
-    <span class="nx">callback</span>
-  <span class="p">)</span>
-<span class="p">}</span>
-
-</code></pre>
-
-<p>This service lets you send SMS and make voice calls. You have to introduce your twilio credentials.</p>
-
-<h2 id="twitter">Twitter</h2>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-
-   <span class="c1">// Message to post</span>
-   <span class="kd">var</span> <span class="nx">inputTwitter</span> <span class="o">=</span> <span class="p">{</span>
-     <span class="s1">'status'</span><span class="p">:</span> <span class="s1">'A 140 character message :P'</span>
-   <span class="p">}</span>
-
-   <span class="c1">// Your twitter API credentials</span>
-   <span class="kd">var</span> <span class="nx">twitter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twitter</span><span class="p">({</span>
-      <span class="na">accessToken</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
-      <span class="na">accessTokenSecret</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
-      <span class="na">consumerKey</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
-      <span class="na">consumerSecret</span><span class="p">:</span> <span class="s1">''</span>
-   <span class="p">});</span>
-
-   <span class="nx">twitter</span><span class="p">.</span><span class="nx">postTweet</span><span class="p">(</span><span class="nx">inputTwitter</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>This service lets you send a Tweet to your Twitter account. You have to introduce your Twitter credentials. See the javascript section for an example.</p>
-
-<p>This service lets you send SMS and make voice calls. You have to introduce your twilio credentials. See the javascript section for examples.</p>
-
-<h2 id="httprequest">httpRequest</h2>
-
-<p>Sends an http request to an external web service.</p>
-
-<p><strong>httpRequest(request, body, callback)</strong></p>
-
-<ul>
-<li>request: object
-
-<ul>
-<li>host: string</li>
-<li>path: string</li>
-<li>port: number || 80</li>
-<li>method: string || &#39;GET&rsquo;</li>
-<li>headers: object {&#39;header-name&rsquo;: &#39;header-value&rsquo;}</li>
-</ul></li>
-<li>body: string</li>
-<li>callback: function(error, headers, data) (optional)
-
-<ul>
-<li>error: tells if the request has got some error</li>
-<li>headers: object response headers</li>
-<li>data: response data</li>
-</ul></li>
-</ul>
-
-<p>If no callback is provided the request will be executed too and errors will be redirected to the console.</p>
-
-<h2 id="console">console</h2>
-
-<p>Sends the paramer data to the developers console.</p>
-
-<p><strong>console.log(arg1, arg2, &hellip;, argN)</strong></p>
-
-<p><strong>console.error(arg1, arg2, &hellip;, argN)</strong></p>
-
-<p><strong>console.log(arg1, arg2, &hellip;, argN)</strong></p>
-
-<ul>
-<li>argX: (string|number|object)</li>
-</ul>
-
-<h2 id="analytics-events">analytics.events</h2>
-
-<p>Allows to create and retrieve events.</p>
-
-<p><strong>analytics.events.create(event)</strong></p>
-
-<ul>
-<li>event: object
-
-<ul>
-<li>name: string</li>
-<li>value: string</li>
-</ul></li>
-</ul>
-
-<p><strong>analytics.events.getByName(name, callback)</strong></p>
-
-<ul>
-<li>name: string</li>
-<li>callback: function(error, data)
-
-<ul>
-<li>error: (null|string) if something has gone wrong</li>
-<li>data: DataSet</li>
-</ul></li>
-</ul>
-
-<p>The last hour/day events with eventName = name will be retrieved. Each element of the DataSet will have createdAt and value elements.</p>
-
-<p><strong>analytics.events.getByName(name, callback)</strong></p>
-
-<ul>
-<li>name: string</li>
-<li>callback: function(error, data)
-
-<ul>
-<li>error: (null|string) if something has gone wrong</li>
-<li>data: DataSet</li>
-</ul></li>
-</ul>
-
-<p>The last hour/day events with eventName = name will be retrieved. Each element of DataSet will be the value of the event with that name.</p>
-
-<h2 id="analytics-kpis">analytics.kpis</h2>
-
-<p>Allows to create custom kpis.</p>
-
-<p><strong>analytics.kpis.create(name,value)</strong></p>
-
-<ul>
-<li>name: string</li>
-<li>value: (string|number|object)</li>
-</ul>
-
-<h2 id="thethingsapi">thethingsAPI</h2>
-
-<blockquote>
-<p>thethings API example</p>
-</blockquote>
-<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
-  <span class="kd">var</span> <span class="nx">thingToken</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span>
-
-  <span class="nx">thethingsAPI</span><span class="p">.</span><span class="nx">thingRead</span><span class="p">(</span><span class="nx">thingToken</span><span class="p">,</span> <span class="s1">'temperature'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
-
-  <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="p">{</span><span class="na">values</span> <span class="p">:</span> <span class="p">[{</span><span class="na">key</span><span class="p">:</span> <span class="s1">'avg-temperature'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span> <span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">}]}</span>
-    <span class="nx">thethingsAPI</span><span class="p">.</span><span class="nx">thingWrite</span><span class="p">(</span><span class="nx">thingToken</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">callback</span><span class="p">()</span> <span class="p">})</span>
-  <span class="p">})</span>
-<span class="p">}</span>
-</code></pre>
-
-<p>Allows to Read and Write on a device resource.</p>
-
-<p><strong>thethingsAPI.thingRead(thingToken, resourceName, callback)</strong></p>
-
-<ul>
-<li>thingToken: string</li>
-<li>resourceName: string</li>
-<li>callback: function(error, result)
-
-<ul>
-<li>error: tells if the request has got some error</li>
-<li>result: response data</li>
-</ul></li>
-</ul>
-
-<p><strong>thethingsAPI.thingWrite(thingToken, values, callback)</strong></p>
-
-<ul>
-<li>thingToken: string</li>
-<li>values: array(Object,&hellip;)
-
-<ul>
-<li>Object: {key:&#39;resourceName&rsquo;, value:(string|number|object)}</li>
-</ul></li>
-<li>callback: function(error, result)
-
-<ul>
-<li>error: tells if the request has got some error</li>
-<li>result: response data</li>
-</ul></li>
-</ul>
-
-<p>See the javascript section for an example.</p>
-
-<h2 id="dataset">DataSet</h2>
-
-<p>This class represents an abstraction of data returned from analytics.events.getByName This class allows chaining.</p>
-
-<p>Note: * means any type of element.</p>
-
-<p>DataSet <strong>DataSet.prototype.map(fn)</strong></p>
-
-<ul>
-<li>fn:* function(value)
-
-<ul>
-<li>value: * one element from the DataSet</li>
-</ul></li>
-</ul>
-
-<p>Applies fn to each value in the DataSet. i.e. ResultDataSet[i] = fn(DataSet[i])</p>
-
-<p>DataSet <strong>DataSet.prototype.filter(fn)</strong></p>
-
-<ul>
-<li>fn: boolean function(value)
-
-<ul>
-<li>value: *</li>
-</ul></li>
-</ul>
-
-<p>Returns a new DataSet where its elements are the ones where fn(oldDataSet[i]) == true</p>
-
-<p>Any <strong>DataSet.prototype.reduce(fn, init)</strong></p>
-
-<ul>
-<li><p>fn:  * function(prev, cur)</p>
-
-<ul>
-<li>prev: * previous aggregated value</li>
-<li>cur: current value</li>
-</ul></li>
-<li><p>init: * initialization value</p></li>
-</ul>
-
-<p>Returns fn(&hellip;fn(fn(fn(init, DataSet[0]), DataSet[1]), DataSet[2]),&hellip;) but the execution order is undefined. i.e. fn should be commutative and associative.</p>
-
-<p>For example, the product of all the elements of the dataset would be:</p>
-
-<p><code class="prettyprint">var product = ds.reduce(function(prev, cur){return prev*cur},1)</code></p>
-
-<p>DataSet <strong>DataSet.prototype.sort(fn)</strong></p>
-
-<ul>
-<li>fn: number function(a,b) (optional) comparing function returns &lt; 0 if a goes before b</li>
-</ul>
-
-<p>DataSet <strong>DataSet.prototype.take(n, s)</strong></p>
-
-<ul>
-<li>n: num elements to take</li>
-<li>s: num elements to skip (optional)</li>
-</ul>
-
-<p>Returns a new DataSet with the first n elements (and skiping s) from the old.</p>
-
-<p>DataSet <strong>DataSet.prototype.deltaR(fn, last)</strong></p>
-
-<ul>
-<li>fn: * function(cur,next) (optional) function that is applied to each pair of consecutive elements and stored in cur</li>
-<li>last: * (opitional) a virtual element to add temporary in the last element of the DataSet</li>
-</ul>
-
-<p>Applies fn to each pair of consecutive elements in the DataSet. Default value for fn:</p>
-
-<p>TODO qué hacer con esto??
-function(cur, next){
-  if(cur.value){
-    return next.value - cur.value
-  }else{
-    return next - cur
-  }
-}</p>
-
-<p>DataSet <strong>DataSet.prototype.deltaL(fn, first)</strong></p>
-
-<ul>
-<li>fn: * function(prev,cur) (optional) function that is applied to each pair of consecutive elements and stored in cur</li>
-<li>first: * (opitional) a virtual element to add temporary in the first element of the DataSet</li>
-</ul>
-
-<p>Applies fn to each pair of consecutive elements in the DataSet. Default value for fn:</p>
-
-<p>TODO: qué hacer con esto????
-function(prev, cur){
-  if(cur.value){
-    return next.value - cur.value
-  }else{
-    return next - cur
-  }
-}</p>
-
-<p>Number <strong>DataSet.prototype.count()</strong></p>
-
-<p>Returns the number of elements in the DataSet</p>
-
-<p>Number <strong>DataSet.prototype.sum()</strong></p>
-
-<p>Returns the sum of all elements in the DataSet</p>
-
-<p>Number <strong>DataSet.prototype.prod()</strong></p>
-
-<p>Returns the product of all elements in the DataSet</p>
-
-<p>Number <strong>DataSet.prototype.avg()</strong></p>
-
-<p>Returns the average of all elements in the DataSet</p>
-
-<p>Number <strong>DataSet.prototype.wavg()</strong></p>
-
-<p>Returns the weighted average of all elements in the DataSet. That is, weight each value with the time it was active. For example, if there have been 20 degrees during 2 hours and 15 degrees during 1 hour. Then wavg() will be 2/3 20 + 1/3 15 = 18.3. Needs from getByName.</p>
-
-<p>Number <strong>DataSet.prototype.max()</strong></p>
-
-<p>Returns the max element of the DataSet</p>
-
-<p>Number <strong>DataSet.prototype.min()</strong></p>
-
-<p>Returns the min element of the DataSet</p>
-
-<p>DataSet <strong>DataSet.prototype.sample(p)</strong></p>
-
-<ul>
-<li>p: number 0 &lt;= p &lt;= 1</li>
-</ul>
-
-<p>Returns a new DataSet where each element has probability p to be in the new DataSet</p>
-
-<p>Array <strong>DataSet.prototype.percentiles(splits, fn)</strong></p>
-
-<ul>
-<li>splits: number</li>
-<li>fn: * function(value)</li>
-</ul>
-
-<p>Splits the data in splits parts, gets the median (if were previously sorted) of each one and returns fn(median)</p>
-
-<p>Array <strong>DataSet.prototype.collect()</strong></p>
-
-<p>Returns the data in form of array</p>
+<p><code class="prettyprint">PUBLISH    v2/things/{ {thingToken} }/firmwares/latest/request</code></p>
 
       </div>
       <div class="dark-box">

@@ -656,6 +656,8 @@ In the example the description key/resource is used to store the predefined coor
 
 </code></pre>
 
+<p>This service lets you send SMS and make voice calls. You have to introduce your twilio credentials.</p>
+
 <h2 id="twitter">Twitter</h2>
 <pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
 
@@ -721,6 +723,49 @@ In the example the description key/resource is used to store the predefined coor
 <ul>
 <li>argX: (string|number|object)</li>
 </ul>
+
+<h2 id="analytics-events">analytics.events</h2>
+
+<p>Allows to create and retrieve events.</p>
+
+<p><strong>analytics.events.create(event)</strong></p>
+
+<ul>
+<li>event: object
+
+<ul>
+<li>name: string</li>
+<li>value: string</li>
+</ul></li>
+</ul>
+
+<p><strong>analytics.events.getByName(name, callback)</strong></p>
+
+<ul>
+<li>name: string</li>
+<li>callback: function(error, data)
+
+<ul>
+<li>error: (null|string) if something has gone wrong</li>
+<li>data: DataSet</li>
+</ul></li>
+</ul>
+
+<p>The last hour/day events with eventName = name will be retrieved. Each element of the DataSet will have createdAt and value elements.</p>
+
+<p><strong>analytics.events.getByName(name, callback)</strong></p>
+
+<ul>
+<li>name: string</li>
+<li>callback: function(error, data)
+
+<ul>
+<li>error: (null|string) if something has gone wrong</li>
+<li>data: DataSet</li>
+</ul></li>
+</ul>
+
+<p>The last hour/day events with eventName = name will be retrieved. Each element of DataSet will be the value of the event with that name.</p>
 
       </div>
       <div class="dark-box">

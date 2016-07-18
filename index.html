@@ -141,9 +141,6 @@
 
 <h2 id="get-latest-firmware-version">Get latest firmware version:</h2>
 
-<p>Query for the latest firmware informations for the model of the thing corresponding to the specified THINGTOKEN.
-It will return all latest firmware registred for every micro-controller (MCU).</p>
-
 <blockquote>
 <p>HTTP REST API</p>
 </blockquote>
@@ -201,6 +198,9 @@ mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2"
 <span class="o">}</span>
 </code></pre>
 
+<p>Query for the latest firmware informations for the model of the thing corresponding to the specified THINGTOKEN.
+It will return all latest firmware registred for every micro-controller (MCU).</p>
+
 <h3 id="http-request">HTTP Request</h3>
 
 <p><code class="prettyprint">GET    https://api.thethings.io/v2/things/THING_TOKEN/firmwares/latest</code></p>
@@ -214,6 +214,48 @@ mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2"
 <p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN/firmwares/latest/response</code></p>
 
 <p><code class="prettyprint">PUBLISH    v2/things/{ {thingToken} }/firmwares/latest/request</code></p>
+
+<h2 id="download-firmware">Download firmware:</h2>
+
+<blockquote>
+<p>HTTP REST API</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># HTTP API example via cURL</span>
+curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
+  -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID"</span> -k
+</code></pre>
+
+<blockquote>
+<p>CoAP REST APi</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># CoAP API example via coap-cli</span>
+coap get coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID
+</code></pre>
+
+<blockquote>
+<p>MQTT RPC API</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="c"># Subscribe for the response</span>
+mosquitto_sub -h <span class="s2">"mqtt.thethings.io"</span> -q 0 -t <span class="s2">"v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/response"</span> -d
+<span class="c"># Publish request</span>
+mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -q 0 -t <span class="s2">"v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/request"</span> -m <span class="s1">'{"_requestId":"RAW"}'</span> -d
+</code></pre>
+
+<p>Download the firmware using the FIRMWAREID (from the previous api call) and THINGTOKEN.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET    https://api.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID</code></p>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID</code></p>
+
+<h3 id="mqtt">MQTT</h3>
+
+<p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/response</code></p>
+
+<p><code class="prettyprint">PUBLISH    v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/request</code></p>
 
       </div>
       <div class="dark-box">

@@ -767,6 +767,67 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>The last hour/day events with eventName = name will be retrieved. Each element of DataSet will be the value of the event with that name.</p>
 
+<h2 id="analytics-kpis">analytics.kpis</h2>
+
+<p>Allows to create custom kpis.</p>
+
+<p><strong>analytics.kpis.create(name,value)</strong></p>
+
+<ul>
+<li>name: string</li>
+<li>value: (string|number|object)</li>
+</ul>
+
+<h2 id="thethingsapi">thethingsAPI</h2>
+
+<blockquote>
+<p>thethings API example</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="kd">function</span> <span class="nx">trigger</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="nx">callback</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">thingToken</span> <span class="o">=</span> <span class="nx">params</span><span class="p">.</span><span class="nx">thingToken</span>
+
+  <span class="nx">thethingsAPI</span><span class="p">.</span><span class="nx">thingRead</span><span class="p">(</span><span class="nx">thingToken</span><span class="p">,</span> <span class="s1">'temperature'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="p">{</span><span class="na">values</span> <span class="p">:</span> <span class="p">[{</span><span class="na">key</span><span class="p">:</span> <span class="s1">'avg-temperature'</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span> <span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span><span class="p">}]}</span>
+    <span class="nx">thethingsAPI</span><span class="p">.</span><span class="nx">thingWrite</span><span class="p">(</span><span class="nx">thingToken</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">callback</span><span class="p">()</span> <span class="p">})</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>Allows to Read and Write on a device resource.</p>
+
+<p><strong>thethingsAPI.thingRead(thingToken, resourceName, callback)</strong></p>
+
+<ul>
+<li>thingToken: string</li>
+<li>resourceName: string</li>
+<li>callback: function(error, result)
+
+<ul>
+<li>error: tells if the request has got some error</li>
+<li>result: response data</li>
+</ul></li>
+</ul>
+
+<p><strong>thethingsAPI.thingWrite(thingToken, values, callback)</strong></p>
+
+<ul>
+<li>thingToken: string</li>
+<li>values: array(Object,&hellip;)
+
+<ul>
+<li>Object: {key:&#39;resourceName&rsquo;, value:(string|number|object)}</li>
+</ul></li>
+<li>callback: function(error, result)
+
+<ul>
+<li>error: tells if the request has got some error</li>
+<li>result: response data</li>
+</ul></li>
+</ul>
+
+<p>See the javascript section for an example.</p>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

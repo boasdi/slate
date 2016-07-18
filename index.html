@@ -846,28 +846,37 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>Applies fn to each value in the DataSet. i.e. ResultDataSet[i] = fn(DataSet[i])</p>
 
-<p>DataSet DataSet.prototype.filter(fn)</p>
+<p>DataSet <strong>DataSet.prototype.filter(fn)</strong></p>
 
-<p>fn: boolean function(value)</p>
+<ul>
+<li>fn: boolean function(value)
 
-<p>value: *
-Returns a new DataSet where its elements are the ones where fn(oldDataSet[i]) == true</p>
+<ul>
+<li>value: *</li>
+</ul></li>
+</ul>
 
-<p>Any DataSet.prototype.reduce(fn, init)</p>
+<p>Returns a new DataSet where its elements are the ones where fn(oldDataSet[i]) == true</p>
 
-<p>fn: * function(prev, cur)
-prev: * previous aggregated value
-cur: current value
-init: * initialization value</p>
+<p>Any <strong>DataSet.prototype.reduce(fn, init)</strong></p>
+
+<ul>
+<li><p>fn:  * function(prev, cur)</p>
+
+<ul>
+<li>prev: * previous aggregated value</li>
+<li>cur: current value</li>
+</ul></li>
+<li><p>init: * initialization value</p></li>
+</ul>
 
 <p>Returns fn(&hellip;fn(fn(fn(init, DataSet[0]), DataSet[1]), DataSet[2]),&hellip;) but the execution order is undefined. i.e. fn should be commutative and associative.</p>
 
 <p>For example, the product of all the elements of the dataset would be:</p>
 
-<p>￼
-1
-var product = ds.reduce(function(prev, cur){return prev*cur},1)
-DataSet DataSet.prototype.sort(fn)</p>
+<p>&#39;var product = ds.reduce(function(prev, cur){return prev*cur},1)&rsquo;</p>
+
+<p>DataSet DataSet.prototype.sort(fn)</p>
 
 <p>fn: number function(a,b) (optional) comparing function returns &lt; 0 if a goes before b
 DataSet DataSet.prototype.take(n, s)</p>

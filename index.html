@@ -680,6 +680,48 @@ In the example the description key/resource is used to store the predefined coor
 
 <p>This service lets you send SMS and make voice calls. You have to introduce your twilio credentials. See the javascript section for examples.</p>
 
+<h2 id="httprequest">httpRequest</h2>
+
+<p>Sends an http request to an external web service.</p>
+
+<p><strong>httpRequest(request, body, callback)</strong></p>
+
+<ul>
+<li>request: object
+
+<ul>
+<li>host: string</li>
+<li>path: string</li>
+<li>port: number || 80</li>
+<li>method: string || &#39;GET&rsquo;</li>
+<li>headers: object {&#39;header-name&rsquo;: &#39;header-value&rsquo;}</li>
+</ul></li>
+<li>body: string</li>
+<li>callback: function(error, headers, data) (optional)
+
+<ul>
+<li>error: tells if the request has got some error</li>
+<li>headers: object response headers</li>
+<li>data: response data</li>
+</ul></li>
+</ul>
+
+<p>If no callback is provided the request will be executed too and errors will be redirected to the console.</p>
+
+<h2 id="console">console</h2>
+
+<p>Sends the paramer data to the developers console.</p>
+
+<p><strong>console.log(arg1, arg2, &hellip;, argN)</strong></p>
+
+<p><strong>console.error(arg1, arg2, &hellip;, argN)</strong></p>
+
+<p><strong>console.log(arg1, arg2, &hellip;, argN)</strong></p>
+
+<ul>
+<li>argX: (string|number|object)</li>
+</ul>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">

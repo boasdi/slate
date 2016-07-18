@@ -876,83 +876,103 @@ In the example the description key/resource is used to store the predefined coor
 
 <p><code class="prettyprint">var product = ds.reduce(function(prev, cur){return prev*cur},1)</code></p>
 
-<p>DataSet DataSet.prototype.sort(fn)</p>
+<p>DataSet <strong>DataSet.prototype.sort(fn)</strong></p>
 
-<p>fn: number function(a,b) (optional) comparing function returns &lt; 0 if a goes before b
-DataSet DataSet.prototype.take(n, s)</p>
+<ul>
+<li>fn: number function(a,b) (optional) comparing function returns &lt; 0 if a goes before b</li>
+</ul>
 
-<p>n: num elements to take
-s: num elements to skip (optional)
-Returns a new DataSet with the first n elements (and skiping s) from the old.</p>
+<p>DataSet <strong>DataSet.prototype.take(n, s)</strong></p>
 
-<p>DataSet DataSet.prototype.deltaR(fn, last)</p>
+<ul>
+<li>n: num elements to take</li>
+<li>s: num elements to skip (optional)</li>
+</ul>
 
-<p>fn: * function(cur,next) (optional) function that is applied to each pair of consecutive elements and stored in cur
-last: * (opitional) a virtual element to add temporary in the last element of the DataSet</p>
+<p>Returns a new DataSet with the first n elements (and skiping s) from the old.</p>
+
+<p>DataSet <strong>DataSet.prototype.deltaR(fn, last)</strong></p>
+
+<ul>
+<li>fn: * function(cur,next) (optional) function that is applied to each pair of consecutive elements and stored in cur</li>
+<li>last: * (opitional) a virtual element to add temporary in the last element of the DataSet</li>
+</ul>
 
 <p>Applies fn to each pair of consecutive elements in the DataSet. Default value for fn:</p>
 
-<p>function(cur, next){
+<p>TODO qué hacer con esto??
+function(cur, next){
   if(cur.value){
     return next.value - cur.value
   }else{
     return next - cur
   }
-}
-DataSet DataSet.prototype.deltaL(fn, first)</p>
+}</p>
 
-<p>fn: * function(prev,cur) (optional) function that is applied to each pair of consecutive elements and stored in cur
-first: * (opitional) a virtual element to add temporary in the first element of the DataSet</p>
+<p>DataSet <strong>DataSet.prototype.deltaL(fn, first)</strong></p>
+
+<ul>
+<li>fn: * function(prev,cur) (optional) function that is applied to each pair of consecutive elements and stored in cur</li>
+<li>first: * (opitional) a virtual element to add temporary in the first element of the DataSet</li>
+</ul>
 
 <p>Applies fn to each pair of consecutive elements in the DataSet. Default value for fn:</p>
 
-<p>function(prev, cur){
+<p>TODO: qué hacer con esto????
+function(prev, cur){
   if(cur.value){
     return next.value - cur.value
   }else{
     return next - cur
   }
-}
-Number DataSet.prototype.count()</p>
+}</p>
+
+<p>Number <strong>DataSet.prototype.count()</strong></p>
 
 <p>Returns the number of elements in the DataSet</p>
 
-<p>Number DataSet.prototype.sum()</p>
+<p>Number <strong>DataSet.prototype.sum()</strong></p>
 
 <p>Returns the sum of all elements in the DataSet</p>
 
-<p>Number DataSet.prototype.prod()</p>
+<p>Number <strong>DataSet.prototype.prod()</strong></p>
 
 <p>Returns the product of all elements in the DataSet</p>
 
-<p>Number DataSet.prototype.avg()</p>
+<p>Number <strong>DataSet.prototype.avg()</strong></p>
 
 <p>Returns the average of all elements in the DataSet</p>
 
-<p>Number DataSet.prototype.wavg()</p>
+<p>Number <strong>DataSet.prototype.wavg()</strong></p>
 
 <p>Returns the weighted average of all elements in the DataSet. That is, weight each value with the time it was active. For example, if there have been 20 degrees during 2 hours and 15 degrees during 1 hour. Then wavg() will be 2/3 20 + 1/3 15 = 18.3. Needs from getByName.</p>
 
-<p>Number DataSet.prototype.max()</p>
+<p>Number <strong>DataSet.prototype.max()</strong></p>
 
-<p>Returns the max element of the DataSet
-Number DataSet.prototype.min()</p>
+<p>Returns the max element of the DataSet</p>
 
-<p>Returns the min element of the DataSet
-DataSet DataSet.prototype.sample(p)</p>
+<p>Number <strong>DataSet.prototype.min()</strong></p>
 
-<p>p: number 0 &lt;= p &lt;= 1</p>
+<p>Returns the min element of the DataSet</p>
+
+<p>DataSet <strong>DataSet.prototype.sample(p)</strong></p>
+
+<ul>
+<li>p: number 0 &lt;= p &lt;= 1</li>
+</ul>
 
 <p>Returns a new DataSet where each element has probability p to be in the new DataSet</p>
 
-<p>Array DataSet.prototype.percentiles(splits, fn)</p>
+<p>Array <strong>DataSet.prototype.percentiles(splits, fn)</strong></p>
 
-<p>splits: number
-fn: * function(value)</p>
+<ul>
+<li>splits: number</li>
+<li>fn: * function(value)</li>
+</ul>
 
 <p>Splits the data in splits parts, gets the median (if were previously sorted) of each one and returns fn(median)</p>
 
-<p>Array DataSet.prototype.collect()</p>
+<p>Array <strong>DataSet.prototype.collect()</strong></p>
 
 <p>Returns the data in form of array</p>
 

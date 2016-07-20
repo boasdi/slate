@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>thethings.iO Firmware OTA API Reference</title>
+    <title>thethings.iO CoAp API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -123,139 +123,183 @@
       <div class="content">
         <h1 id="introduction">Introduction</h1>
 
-<p>thethings.iO offer over-the-air (OTA) firmware upgrade support to products manufacturers with minimal coding.</p>
+<p>theThings.iO platform provides a complete backend solution for IoT Markers and IoT App Developers through an easy and flexible API. theThings.iO is hardware agnostic, that means that we don&rsquo;t force you to use a specific hardware, provided that is capable to use any of our supported protocols: HTTP, Websockets, MQTT or CoAP.</p>
 
-<p>It permits you to distribute your firmware over Wi-Fi or mobile broadband using our API without requiring the user to connect the device to a computer via USB to perform the update, because firmware updates are available for download from the thethings.iO OTA service.</p>
+<h1 id="things-coap">things - CoAP</h1>
 
-<h1 id="firmware-manager-todo-imagenes">Firmware manager TODO: IMAGENES???</h1>
+<h2 id="basics-of-coap">Basics of CoAP</h2>
 
-<p>Firmware manager permits you to manage and publish your firmwares upgrades for your thing model and microcontroller unit (MCU) through the panel. The following features will be available:</p>
+<p>As <a href="http://en.wikipedia.org/wiki/Constrained_Application_Protocol">Wikipedia</a> says: &lsquo;Constrained Application Protocol (CoAP) is a software protocol intended to be used in very simple electronics devices that allows them to communicate interactively over the Internet.&rsquo;&hellip;&rsquo; CoAP is designed to easily translate to HTTP for simplified integration with the web.&rsquo;</p>
 
-<ol>
-<li>Create and upload new firmware versions</li>
-<li>List all available versions</li>
-<li>Delete firmware versions</li>
-</ol>
+<p>In this page you will learn how to use theThings.IO CoAP endpoint.</p>
 
-<h1 id="api-reference">API reference</h1>
+<h2 id="getting-started">Getting Started</h2>
 
-<h2 id="get-latest-firmware-version">Get latest firmware version</h2>
+<p>The CoAP endpoints are very similar to the REST API. There are the same methods (Activate, ThingWrite ThingRead and ThingSubscribe) and also the paths are the same. The only difference is the endpoint base url and protocol: coap.thethings.io (port 5683)</p>
 
-<blockquote>
-<p>HTTP REST API</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="c"># HTTP API example via cURL</span>
-curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
-  -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/firmwares/latest"</span> -k
-</code></pre>
+<h3 id="get-tokens">Get tokens</h3>
 
-<blockquote>
-<p>CoAP REST API</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="c"># CoAP API example via coap-cli</span>
-coap get coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/latest
-</code></pre>
+<p>To be able to follow the examples you will need an activation code or a thing token.</p>
 
-<blockquote>
-<p>MQT RPC API</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="c"># Subscribe for the response</span>
-mosquitto_sub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/THING_TOKEN/firmwares/latest/response"</span> -d
-<span class="c"># Publish request</span>
-mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -t <span class="s2">"v2/things/THING_TOKEN/firmwares/latest/request"</span> -m <span class="s1">'{"_requestId":"[randomId]"}'</span> -d
-</code></pre>
+<p>An activation code is a unique code that will enable your devices to be activated via the registration endpoint call. The purpose of this code is at the same time identify you as the creator of the thing and when some day you start selling your awesome IoT product, avoid that somebody can activate things in your name. As a result of this call your thing will receive a unique thing token that will identify your thing at thethings.iO platform.
+You can also activate your things manually at the Panel as explained on the getting started guide.</p>
+
+<p>If you are in the developers tier you will get some activation codes for free. If you are in the premium tier you will be able to generate as many activation codes as you need. To get your tokens go to the <a href="https://panel.thethings.io/#/things-manager/">things manager</a> page and click the get activation codes button.</p>
+
+<h3 id="coap-test">CoAP Test</h3>
+
+<p>To test your connectivity with coap.thethings.io you have two options:</p>
+
+<ul>
+<li>Use the coap-cli example from <a href="http://sourceforge.net/projects/libcoap/">libcoap</a></li>
+<li>Use the <a href="https://addons.mozilla.org/ca/firefox/addon/copper-270430/">Firefox plugin Copper</a>. Set the block size to late negotiation or 1024 in the behavior tab.</li>
+</ul>
+
+<h2 id="activate-todo-command-line-example">Activate  TODO: command line example</h2>
 
 <blockquote>
-<p>Sample Response</p>
+<p>Sample Payload</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="o">{</span>
-  <span class="s2">"status"</span>: <span class="s2">"success"</span>,
-  <span class="s2">"firmwares"</span>: <span class="o">[</span>
-    <span class="o">{</span> productId: 1234,
-      version: <span class="s1">'1.0.1'</span>,
-      notes: <span class="s1">'Wifi firmware changelog'</span>,
-      _id: <span class="s1">'56c5a331665c14fa09612f38'</span>,
-      createdAt: <span class="s1">'2016-02-18T10:55:45.517Z'</span>,
-      file:
-       <span class="o">{</span> id: <span class="s1">'56c5a331665c14fa09612f35'</span>,
-         md5: <span class="s1">'0ad066a5d29f3f2a2a1c7c17dd082a79'</span>,
-         <span class="nb">type</span>: <span class="s1">'gfs'</span>,
-         url: <span class="s1">'https ://api.thethings.io/v2/models/125/firmwares/download/ey...oeZPc1raYnhDe7mLo'</span> <span class="o">}</span>,
-      targetMCU: <span class="s1">'WiFi'</span>
-    <span class="o">}</span>,
-    <span class="o">{</span> productId: 1234,
-      version: <span class="s1">'1.0.2'</span>,
-      notes: <span class="s1">'Main board firmware changelog'</span>,
-      _id: <span class="s1">'56c5a331665c14fa09612f39'</span>,
-      createdAt: <span class="s1">'2016-02-18T10:55:45.519Z'</span>,
-      file:
-       <span class="o">{</span> id: <span class="s1">'56c5a331665c14fa09612f34'</span>,
-         md5: <span class="s1">'0ad066a5d29f3f2a2a1c7c17dd082a79'</span>,
-         <span class="nb">type</span>: <span class="s1">'gfs'</span>,
-         url: <span class="s1">'https ://api.thethings.io/v2/models/125/firmwares/download/ey...ljMAXtn3snvSz0dT1Rw'</span> <span class="o">}</span>,
-      targetMCU: <span class="s1">'Main'</span>
-    <span class="o">}</span> <span class="o">]</span>
-<span class="o">}</span>
-</code></pre>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"activationCode"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"{ {activation Code} }"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
-<p>Query for the latest firmware informations for the model of the thing corresponding to the specified THINGTOKEN.
-It will return all latest firmware registred for every micro-controller (MCU).</p>
+<blockquote>
+<p>Everything has gone well:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"created"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"thingToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NwFbEqwEQ-ucyW8aET34EWi6L_tte6fumxTSU-Pkw"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
-<h3 id="http-request">HTTP Request</h3>
+<blockquote>
+<p>Error:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"error"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Error creating thing"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
-<p><code class="prettyprint">GET    https://api.thethings.io/v2/things/THING_TOKEN/firmwares/latest</code></p>
+<p>Activates a thing with an activation code. The result is a thing token. You will be able to retrieve this thing token at any time from the <a href="http://panel.thethings.io/#/things-manager">panel</a></p>
 
 <h3 id="coap-request">CoAP Request</h3>
 
-<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/latest</code></p>
+<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/</code></p>
 
-<h3 id="mqtt">MQTT</h3>
-
-<p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN/firmwares/latest/response</code></p>
-
-<p><code class="prettyprint">PUBLISH    v2/things/{ {thingToken} }/firmwares/latest/request</code></p>
-
-<h2 id="download-firmware">Download firmware</h2>
+<h2 id="write-todo-add-command-line-example">Write TODO: add command line example</h2>
 
 <blockquote>
-<p>HTTP REST API</p>
+<p>Sample Payload</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="c"># HTTP API example via cURL</span>
-curl -i -H <span class="s2">"Accept: application/json"</span> <span class="se">\</span>
-  -X GET <span class="s2">"https://api.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID"</span> -k
-</code></pre>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"values"</span><span class="p">:</span><span class="w">
+    </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Writes the records of data from the thing corresponding to the specified THINGTOKEN. Only alphanumeric characters and &ldquo;.&rdquo;, &ldquo;-&rdquo;, &ldquo;&rdquo; simbols are admited for the resource name &ldquo;key&rdquo;. </p>
 
 <blockquote>
-<p>CoAP REST APi</p>
+<p>Everything has gone well</p>
 </blockquote>
-<pre class="highlight shell"><code><span class="c"># CoAP API example via coap-cli</span>
-coap get coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID
-</code></pre>
-
-<blockquote>
-<p>MQTT RPC API</p>
-</blockquote>
-<pre class="highlight shell"><code><span class="c"># Subscribe for the response</span>
-mosquitto_sub -h <span class="s2">"mqtt.thethings.io"</span> -q 0 -t <span class="s2">"v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/response"</span> -d
-<span class="c"># Publish request</span>
-mosquitto_pub -h <span class="s2">"mqtt.thethings.io"</span> -q 0 -t <span class="s2">"v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/request"</span> -m <span class="s1">'{"_requestId":"RAW"}'</span> -d
-</code></pre>
-
-<p>Download the firmware using the FIRMWAREID (from the previous api call) and THINGTOKEN.</p>
-
-<h3 id="http-request">HTTP Request</h3>
-
-<p><code class="prettyprint">GET    https://api.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID</code></p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Success"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Created"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h3 id="coap-request">CoAP Request</h3>
 
-<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID</code></p>
+<p><code class="prettyprint">POST   coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
 
-<h3 id="mqtt">MQTT</h3>
+<h2 id="read-todo-add-command-line-example">Read TODO: add command line example</h2>
 
-<p><code class="prettyprint">SUBSCRIBE  v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/response</code></p>
+<blockquote>
+<p>Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w"> </span><span class="err">(more</span><span class="w"> </span><span class="err">values)</span><span class="w"> </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
 
-<p><code class="prettyprint">PUBLISH    v2/things/THING_TOKEN/firmwares/download/FIRMWARE_ID/request</code></p>
+<p>This method returns the values of the specified KEY from the corresponding thing THING_TOKEN.</p>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">GET    coap://coap.thethings.io/v2/things/THING_TOKEN/resources/KEY</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>limit</td>
+<td>1</td>
+<td>Number</td>
+<td>Max. number of values to be returned (Max.: 100)</td>
+</tr>
+<tr>
+<td>startDate</td>
+<td>Jan 1st 1970</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The min date</td>
+</tr>
+<tr>
+<td>endDate</td>
+<td>End of times (Javascript)</td>
+<td>YYYYMMDDHHmmss</td>
+<td>The max date</td>
+</tr>
+</tbody></table>
+
+<h2 id="subscribe-todo-add-command-line-example">Subscribe  TODO: add command line example</h2>
+
+<blockquote>
+<p>Each time a Write is sent you get:</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fun"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9000"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"datetime"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-01-30T15:35:33.000Z"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+
+<p>This method subscribes to the thing channel and gets realtime updates. You must set the CoAP observe bit.</p>
+
+<h3 id="coap-request">CoAP Request</h3>
+
+<p><code class="prettyprint">GET coap://coap.thethings.io/v2/things/THING_TOKEN</code></p>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="node-js">Node.js</h3>
+
+<p>The next Node.js library allows to easily connect to the coap.thethings.io endpoint.</p>
+
+<p>You can visit the github repository: <a href="https://github.com/theThings/thethingsio-coap-node">theThings.IO CoAP Node.js library</a></p>
+
+<p>And get the examples at: <a href="https://github.com/theThings/thethingsio-coap-node/tree/master/examples">theThings.IO CoAP Node.js examples</a></p>
 
       </div>
       <div class="dark-box">
